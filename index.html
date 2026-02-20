@@ -4,27 +4,21 @@
   <meta charset="UTF-8" />
   <title>Founder Dark Command Center</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
-<!-- NOISE OVERLAY -->
-<div class="noise"></div>
 
 <header class="topbar">
   <div class="brand">
     <div class="logo">⦿</div>
     <div>
       <div class="title">FOUNDER COMMAND CENTER</div>
-      <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
+      <div class="subtitle">War Mode • Dynamic Target</div>
     </div>
   </div>
   <div class="controls">
-    <button id="refreshBtn" class="btn">↻ Refresh</button>
+    <button id="refreshBtn" class="btn">Refresh</button>
     <div class="pill">
       <span class="dot" id="statusDot">●</span>
       <span id="statusText">idle</span>
@@ -32,213 +26,41 @@
   </div>
 </header>
 
-<!-- CRITICAL ALERT STRIP -->
-<div id="alertStrip" class="alert-strip hidden">
-  <div class="alert-left">
-    <span id="alertBadge" class="badge">ALERT</span>
-    <span id="alertMessage">—</span>
+<section id="mobileSticky" class="mobile-sticky">
+  <div class="ms-left">
+    <span class="ms-dot" id="msDot">●</span>
+    <span id="msStatus">—</span>
   </div>
-  <div class="alert-right" id="alertTime">—</div>
-</div>
+  <div class="ms-right">
+    <span id="msRevenue">—</span>
+  </div>
+</section>
 
 <main class="grid">
-
-  <!-- DAILY TARGET -->
   <section class="panel span-12">
     <div class="panel-head">
-      <h2>⚡ Daily Revenue Target</h2>
+      <h2>Daily Target Mode</h2>
       <div class="small" id="lastUpdated">—</div>
     </div>
-    <div class="card target-card">
-      <div class="target-row">
-        <div class="target-col">
-          <div class="kpi-label">Target EOD</div>
-          <div class="kpi-value accent" id="t_eod">—</div>
-        </div>
-        <div class="target-col">
-          <div class="kpi-label">Expected Now</div>
-          <div class="kpi-value" id="t_now">—</div>
-        </div>
-        <div class="target-col">
-          <div class="kpi-label">Actual Revenue</div>
-          <div class="kpi-value" id="t_act">—</div>
-        </div>
-        <div class="target-col lamp-col">
-          <span class="lamp-big" id="lamp_target"></span>
-          <div class="kpi-sub" id="t_note">—</div>
-        </div>
+
+    <div class="card">
+      <div class="kpi-top">
+        <span class="kpi-label">Dynamic Revenue Target</span>
+        <span class="lamp" id="lamp_target"></span>
       </div>
-      <div class="bar-wrap">
-        <div class="bar">
-          <div class="bar-fill" id="t_bar"></div>
-          <div class="bar-pct" id="t_pct">0%</div>
-        </div>
+
+      <div class="kpi-value" id="t_act">—</div>
+      <div class="kpi-sub">
+        Target EOD: <b id="t_eod">—</b> • Expected now: <b id="t_now">—</b>
       </div>
+
+      <div class="bar">
+        <div class="bar-fill" id="t_bar"></div>
+      </div>
+
+      <div class="kpi-sub" id="t_note">—</div>
     </div>
   </section>
-
-  <!-- MACHINE STATUS -->
-  <section class="panel span-12">
-    <div class="panel-head">
-      <h2>🛰 Machine Status</h2>
-      <div class="small">Semafori tecnici 1d</div>
-    </div>
-    <div class="cards five">
-      <div class="card kpi">
-        <div class="kpi-top">
-          <span class="kpi-label">Link Sent (1d)</span>
-          <span class="lamp" id="lamp_link"></span>
-        </div>
-        <div class="kpi-value" id="v_link">—</div>
-        <div class="kpi-sub" id="s_link">—</div>
-      </div>
-      <div class="card kpi">
-        <div class="kpi-top">
-          <span class="kpi-label">Reminder (1d)</span>
-          <span class="lamp" id="lamp_rem"></span>
-        </div>
-        <div class="kpi-value" id="v_rem">—</div>
-        <div class="kpi-sub" id="s_rem">—</div>
-      </div>
-      <div class="card kpi">
-        <div class="kpi-top">
-          <span class="kpi-label">Paid (1d)</span>
-          <span class="lamp" id="lamp_paid"></span>
-        </div>
-        <div class="kpi-value" id="v_paid">—</div>
-        <div class="kpi-sub" id="s_paid">—</div>
-      </div>
-      <div class="card kpi">
-        <div class="kpi-top">
-          <span class="kpi-label">Revenue Delta</span>
-          <span class="lamp" id="lamp_revdelta"></span>
-        </div>
-        <div class="kpi-value" id="v_revdelta">—</div>
-        <div class="kpi-sub" id="s_revdelta">—</div>
-      </div>
-      <div class="card kpi">
-        <div class="kpi-top">
-          <span class="kpi-label">Reentry Rate (1d)</span>
-          <span class="lamp" id="lamp_reentry"></span>
-        </div>
-        <div class="kpi-value" id="v_reentry">—</div>
-        <div class="kpi-sub" id="s_reentry">—</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- REVENUE CORE -->
-  <section class="panel span-7">
-    <div class="panel-head">
-      <h2>💰 Revenue Core</h2>
-      <div class="small">Multi-range snapshot</div>
-    </div>
-    <div class="stack">
-      <div class="row">
-        <div class="metric">
-          <div class="label">Revenue 1d</div>
-          <div class="value" id="r_rev1">—</div>
-        </div>
-        <div class="metric">
-          <div class="label">Revenue 7d</div>
-          <div class="value" id="r_rev7">—</div>
-        </div>
-        <div class="metric">
-          <div class="label">Revenue 30d</div>
-          <div class="value" id="r_rev30">—</div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="metric">
-          <div class="label">ARPPU (7d)</div>
-          <div class="value" id="r_arppu">—</div>
-        </div>
-        <div class="metric">
-          <div class="label">T1 Conversion (7d)</div>
-          <div class="value" id="r_t1conv">—</div>
-        </div>
-        <div class="metric">
-          <div class="label">Upgrade T2→T3 (7d)</div>
-          <div class="value" id="r_upg">—</div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="row">
-        <div class="metric wide">
-          <div class="label">Valuation Proxy (rev30d × 10)</div>
-          <div class="value accent" id="r_val">—</div>
-        </div>
-        <div class="metric wide">
-          <div class="label">Growth Rate (7d vs 30d avg)</div>
-          <div class="value" id="r_growth">—</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ALERTS & SUGGESTIONS -->
-  <section class="panel span-5">
-    <div class="panel-head">
-      <h2>🚨 Alerts & Actions</h2>
-      <div class="small">Auto-diagnosi</div>
-    </div>
-    <div class="alertbox critical">
-      <div class="alerttitle">Critical</div>
-      <ul id="criticalList"><li class="muted">—</li></ul>
-    </div>
-    <div class="alertbox warn">
-      <div class="alerttitle">Warnings</div>
-      <ul id="warningList"><li class="muted">—</li></ul>
-    </div>
-    <div class="divider"></div>
-    <div class="alertbox suggest">
-      <div class="alerttitle">Suggested Moves</div>
-      <ul id="suggestList"><li class="muted">—</li></ul>
-    </div>
-  </section>
-
-  <!-- CHARTS -->
-  <section class="panel span-7">
-    <div class="panel-head">
-      <h2>📊 Paid per Tier (7d)</h2>
-      <div class="small">Distribuzione vendite</div>
-    </div>
-    <canvas id="paidChart"></canvas>
-  </section>
-
-  <section class="panel span-5">
-    <div class="panel-head">
-      <h2>🎚 Levers (7d)</h2>
-      <div class="small">Reminder / Reentry / Locks</div>
-    </div>
-    <canvas id="leversChart"></canvas>
-  </section>
-
-  <!-- TIER TABLE -->
-  <section class="panel span-12">
-    <div class="panel-head">
-      <h2>🔬 Tier Detail (7d)</h2>
-      <div class="small">Se un tier "muore" lo vedi qui</div>
-    </div>
-    <div class="tablewrap">
-      <table id="tiersTable">
-        <thead>
-          <tr>
-            <th>Tier</th>
-            <th>Paid</th>
-            <th>Links</th>
-            <th>Conv %</th>
-            <th>Rem1</th>
-            <th>Rem2</th>
-            <th>Reentry</th>
-            <th>Locks</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
 </main>
 
 <script src="app.js"></script>
