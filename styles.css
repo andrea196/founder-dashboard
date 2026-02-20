@@ -1,50 +1,26 @@
-body{
-  background:#0b0d12;
-  color:white;
-  font-family:Arial, sans-serif;
+
+body {
+  background:#0b0f17;
+  color:#ffffff;
+  font-family:system-ui,Arial;
   margin:0;
-}
-
-.topbar{
-  display:flex;
-  justify-content:space-between;
   padding:20px;
-  border-bottom:1px solid #222;
+  font-size:18px;
 }
 
-.grid{
+h1 { font-size:20px; }
+h2 { font-size:18px; margin-top:0; }
+
+.panel {
+  background:#111827;
   padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,0.1);
 }
 
-.panel{
-  background:#111;
-  padding:20px;
-  border-radius:10px;
-}
-
-.card{
-  background:#1a1a1a;
-  padding:15px;
-  border-radius:10px;
-}
-
-.bar{
-  margin-top:10px;
-  height:10px;
-  background:#333;
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.bar-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg, #00bfff, #00ff88);
-}
-
-.lamp{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:inline-block;
+.kpi {
+  font-weight:800;
+  font-size:20px;
+  margin:10px 0;
 }
