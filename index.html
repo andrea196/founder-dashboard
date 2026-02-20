@@ -1,55 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>Founder Dark Command Center</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Founder Command Center FULL v3</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">
-    <div class="logo">⦿</div>
-    <div>
-      <div class="title">FOUNDER COMMAND CENTER</div>
-      <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
-    </div>
-  </div>
-  <div class="controls">
-    <button id="refreshBtn" class="btn">Refresh</button>
-    <div class="pill">
-      <span class="dot" id="statusDot">●</span>
-      <span id="statusText">idle</span>
-    </div>
-  </div>
-</header>
+  <header class="topbar">
+    <h1>FOUNDER COMMAND CENTER – FULL v3</h1>
+    <button onclick="load()">Refresh</button>
+  </header>
 
-<main class="grid">
-  <section class="panel span-12">
-    <div class="panel-head">
-      <h2>Daily Target Mode</h2>
-      <div class="small" id="lastUpdated">—</div>
-    </div>
+  <main>
+    <section class="panel">
+      <h2>Oggi</h2>
+      <div class="kpi">Link 1D: <span id="link1">—</span></div>
+      <div class="kpi">Reminder 1D: <span id="rem1">—</span></div>
+      <div class="kpi">Paid 1D: <span id="paid1">—</span></div>
+      <div class="kpi">Revenue 1D: <span id="rev1">—</span></div>
+      <div class="kpi">Oggi vs media 7D: <span id="delta">—</span></div>
+    </section>
 
-    <div class="card">
-      <div class="kpi-top">
-        <span class="kpi-label">Dynamic Revenue Target</span>
-        <span class="lamp" id="lamp_target"></span>
-      </div>
+    <section class="panel">
+      <h2>Vendite & Conversioni (7D)</h2>
+      <div class="kpi">T1 Conversion: <span id="t1conv">—</span></div>
+      <div class="kpi">Upgrade T2→T3: <span id="upgrade">—</span></div>
+      <div class="kpi">ARPPU: <span id="arppu">—</span></div>
+      <div class="kpi">Reminder Efficiency: <span id="remeff">—</span></div>
+    </section>
 
-      <div class="kpi-sub">
-        Target EOD: <b id="t_eod">—</b> • Expected now: <b id="t_now">—</b> • Actual: <b id="t_act">—</b>
-      </div>
-
-      <div class="bar">
-        <div class="bar-fill" id="t_bar"></div>
-      </div>
-
-      <div class="kpi-sub" id="t_note">—</div>
-    </div>
-  </section>
-</main>
+    <section class="panel">
+      <h2>Money & Growth</h2>
+      <div class="kpi">Revenue 7D: <span id="rev7">—</span></div>
+      <div class="kpi">Revenue 30D: <span id="rev30">—</span></div>
+      <div class="kpi">Growth Rate: <span id="growth">—</span></div>
+      <div class="kpi">Valuation Proxy (rev30×10): <span id="valuation">—</span></div>
+    </section>
+  </main>
 
 <script src="app.js"></script>
 </body>
