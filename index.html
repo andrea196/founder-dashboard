@@ -1,32 +1,63 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Founder Command Center — FULL v3</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FOUNDER COMMAND CENTER — FULL v3 (WAR ROOM)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
-      <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
-    </div>
-    <div class="actions">
-      <span class="pill" id="statusPill">loading…</span>
-      <div class="seg" role="tablist" aria-label="Range">
-        <button class="segBtn isActive" data-range="1d">1D</button>
-        <button class="segBtn" data-range="7d">7D</button>
-        <button class="segBtn" data-range="14d">14D</button>
-        <button class="segBtn" data-range="30d">30D</button>
+  <div class="wrap">
+    <header class="topbar">
+      <div>
+        <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
+        <div class="subtitle">War Room • Alert-first • Dynamic Range</div>
       </div>
-      <button class="btn" id="refreshBtn" type="button">Refresh</button>
-    </div>
-  </header>
 
-  <main class="wrap">
-    <div class="grid2">
-      <section class="card">
+      <div class="controls">
+        <span class="pill" id="livePill">LIVE</span>
+
+        <label class="selectWrap" for="rangeSelect" aria-label="Range selector">
+          <span class="selectLabel">Range</span>
+          <select id="rangeSelect" class="select">
+            <option value="1d">1D</option>
+            <option value="7d" selected>7D</option>
+            <option value="14d">14D</option>
+            <option value="30d">30D</option>
+          </select>
+        </label>
+
+        <button class="btn" id="refreshBtn" type="button">Refresh</button>
+      </div>
+    </header>
+
+    <div class="banner" id="statusBanner">
+      <div class="statusLeft">
+        <div class="statusTitle">Status</div>
+        <div class="statusMsg" id="statusMsg">loading…</div>
+      </div>
+      <div class="statusRight">
+        <div class="meta">
+          <div class="metaLabel">Range</div>
+          <div class="metaValue" id="metaRange">—</div>
+        </div>
+        <div class="meta">
+          <div class="metaLabel">From</div>
+          <div class="metaValue" id="metaFrom">—</div>
+        </div>
+        <div class="meta">
+          <div class="metaLabel">To</div>
+          <div class="metaValue" id="metaTo">—</div>
+        </div>
+        <div class="meta">
+          <div class="metaLabel">Generated</div>
+          <div class="metaValue mono" id="metaGen">—</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="grid2">
+      <div class="card">
         <div class="cardTitle">DAILY REVENUE TARGET</div>
         <div class="grid3">
           <div class="kpi">
@@ -39,119 +70,80 @@
           </div>
           <div class="kpi">
             <div class="kpiLabel">Updated</div>
-            <div class="kpiValue small" id="updatedAt">—</div>
+            <div class="kpiValue mono" id="updatedAt">—</div>
           </div>
         </div>
-        <div class="muted" id="periodLine">—</div>
-      </section>
+        <div class="note">Nota: Target è opzionale (se non lo imposti in app.js resta “—”).</div>
+      </div>
 
-      <section class="card">
-        <div class="cardTitle">TODAY OPS (1D)</div>
+      <div class="card">
+        <div class="cardTitle">MONEY & GROWTH</div>
         <div class="grid4">
           <div class="kpi">
-            <div class="kpiLabel">Links sent</div>
-            <div class="kpiValue" id="links1d">—</div>
+            <div class="kpiLabel">Revenue (range)</div>
+            <div class="kpiValue" id="revRange">—</div>
           </div>
           <div class="kpi">
-            <div class="kpiLabel">Reminders sent</div>
-            <div class="kpiValue" id="reminders1d">—</div>
+            <div class="kpiLabel">Paid (range)</div>
+            <div class="kpiValue" id="paidRange">—</div>
           </div>
           <div class="kpi">
-            <div class="kpiLabel">Paid</div>
-            <div class="kpiValue" id="paid1d">—</div>
+            <div class="kpiLabel">ARPPU (range)</div>
+            <div class="kpiValue" id="arppu">—</div>
           </div>
           <div class="kpi">
-            <div class="kpiLabel">Revenue</div>
-            <div class="kpiValue" id="revenue1d">—</div>
+            <div class="kpiLabel">Revenue / Active (24h)</div>
+            <div class="kpiValue" id="revPerActive">—</div>
           </div>
         </div>
-        <div class="grid2 mt">
-          <div class="kpi">
-            <div class="kpiLabel">Active users (24h)</div>
-            <div class="kpiValue small" id="active24h">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">New users (range)</div>
-            <div class="kpiValue small" id="newUsersRange">—</div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <section class="card">
-      <div class="cardTitle">SALES & CONVERSIONS (range)</div>
-      <div class="grid5">
-        <div class="kpi">
-          <div class="kpiLabel">T1 Conversion</div>
-          <div class="kpiValue" id="t1Conv">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Upgrade T2→T3</div>
-          <div class="kpiValue" id="t2t3">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Upgrade Feet1→Feet2</div>
-          <div class="kpiValue" id="feetUp">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">ARPPU</div>
-          <div class="kpiValue" id="arppu">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Reminder Efficiency</div>
-          <div class="kpiValue" id="remEff">—</div>
-        </div>
-      </div>
-      <div class="muted">Nota: “Reminder Efficiency” = paid / reminders (se disponibile), altrimenti “—”.</div>
-    </section>
-
-    <section class="card">
-      <div class="cardTitle">TIERS BREAKDOWN (range)</div>
-      <div class="tableWrap">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Tier</th>
-              <th>Links</th>
-              <th>Rem1</th>
-              <th>Rem2</th>
-              <th>Paid</th>
-              <th>Revenue</th>
-              <th>Conv</th>
-              <th>Locks</th>
-              <th>Reentry</th>
-            </tr>
-          </thead>
-          <tbody id="tiersBody">
-            <tr><td colspan="9" class="muted">loading…</td></tr>
-          </tbody>
-        </table>
       </div>
     </section>
 
     <section class="card">
-      <div class="cardTitle">MONEY & GROWTH</div>
-      <div class="grid4">
+      <div class="cardTitle">OPS & SYSTEM SIGNALS</div>
+      <div class="grid6">
         <div class="kpi">
-          <div class="kpiLabel">Revenue 7D</div>
-          <div class="kpiValue" id="rev7d">—</div>
+          <div class="kpiLabel">Active users (24h)</div>
+          <div class="kpiValue" id="active24h">—</div>
         </div>
         <div class="kpi">
-          <div class="kpiLabel">Revenue 30D</div>
-          <div class="kpiValue" id="rev30d">—</div>
+          <div class="kpiLabel">New users (range)</div>
+          <div class="kpiValue" id="newUsersRange">—</div>
         </div>
         <div class="kpi">
-          <div class="kpiLabel">Growth Rate</div>
-          <div class="kpiValue" id="growthRate">—</div>
+          <div class="kpiLabel">Reminders sent (total)</div>
+          <div class="kpiValue" id="remindersTotal">—</div>
         </div>
         <div class="kpi">
-          <div class="kpiLabel">Valuation Proxy (rev30×10)</div>
-          <div class="kpiValue" id="valuationProxy">—</div>
+          <div class="kpiLabel">Reentry used (total)</div>
+          <div class="kpiValue" id="reentryTotal">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Locks set (total)</div>
+          <div class="kpiValue" id="locksTotal">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">T2→T3 upgrade (range)</div>
+          <div class="kpiValue" id="t2t3Upgrade">—</div>
         </div>
       </div>
     </section>
 
-  </main>
+    <section class="card">
+      <div class="cardTitle">FUNNEL BY TIER (RANGE)</div>
+      <div class="tierGrid" id="tierGrid"></div>
+      <div class="note">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → “—”).</div>
+    </section>
+
+    <section class="card">
+      <div class="cardTitle">UPGRADES (RANGE)</div>
+      <div class="upGrid" id="upgradesGrid"></div>
+    </section>
+
+    <footer class="footer">
+      <span class="muted">v3 • War Room dashboard (static) • Data source: /api/metrics</span>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
