@@ -1,107 +1,158 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Founder Command Center — FULL v3</title>
-
-<style>
-:root{
-  --bg:#0f1117;
-  --panel:#171923;
-  --border:#2a2f3a;
-  --text:#f1f5f9;
-  --muted:#94a3b8;
-  --accent:#3b82f6;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  padding:28px;
-}
-.wrap{max-width:1000px;margin:auto;}
-.title{font-size:28px;font-weight:700;margin-bottom:6px;}
-.subtitle{color:var(--muted);font-size:14px;margin-bottom:20px;}
-.actions{display:flex;gap:12px;margin-bottom:24px;}
-.pill{
-  background:var(--panel);
-  border:1px solid var(--border);
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:13px;
-  color:var(--muted);
-}
-.btn{
-  background:var(--accent);
-  color:white;
-  border:none;
-  padding:8px 16px;
-  border-radius:6px;
-  cursor:pointer;
-}
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:20px;
-}
-.cardTitle{font-size:16px;font-weight:600;margin-bottom:18px;}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-}
-.kpiLabel{font-size:13px;color:var(--muted);margin-bottom:6px;}
-.kpiValue{font-size:22px;font-weight:600;}
-.muted{color:var(--muted);font-size:13px;}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Founder Command Center — FULL v3</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
-
 <body>
-
-<div class="wrap">
-  <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
-  <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
-
-  <div class="actions">
-    <div class="pill" id="statusPill">LIVE</div>
-    <button class="btn" id="refreshBtn">Refresh</button>
-  </div>
-
-  <div class="card">
-    <div class="cardTitle">DAILY REVENUE TARGET</div>
-    <div class="grid">
-      <div><div class="kpiLabel">Target EOD</div><div class="kpiValue">€ 0</div></div>
-      <div><div class="kpiLabel">Actual Revenue</div><div class="kpiValue">€ 0</div></div>
-      <div><div class="kpiLabel">Updated</div><div class="kpiValue muted">—</div></div>
+  <header class="topbar">
+    <div>
+      <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
+      <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="cardTitle">MACHINE STATUS (1D)</div>
-    <div class="grid">
-      <div><div class="kpiLabel">Links</div><div class="kpiValue">0</div></div>
-      <div><div class="kpiLabel">Reminders</div><div class="kpiValue">0</div></div>
-      <div><div class="kpiLabel">Paid</div><div class="kpiValue">0</div></div>
-      <div><div class="kpiLabel">Revenue</div><div class="kpiValue">€ 0</div></div>
+    <div class="actions">
+      <span class="pill" id="statusPill">loading…</span>
+      <div class="seg" role="tablist" aria-label="Range">
+        <button class="segBtn isActive" data-range="1d">1D</button>
+        <button class="segBtn" data-range="7d">7D</button>
+        <button class="segBtn" data-range="14d">14D</button>
+        <button class="segBtn" data-range="30d">30D</button>
+      </div>
+      <button class="btn" id="refreshBtn" type="button">Refresh</button>
     </div>
-  </div>
+  </header>
 
-  <div class="card">
-    <div class="cardTitle">MONEY & GROWTH</div>
-    <div class="grid">
-      <div><div class="kpiLabel">Revenue 7D</div><div class="kpiValue">€ 0</div></div>
-      <div><div class="kpiLabel">Revenue 30D</div><div class="kpiValue">€ 0</div></div>
-      <div><div class="kpiLabel">Growth Rate</div><div class="kpiValue">—</div></div>
-      <div><div class="kpiLabel">Valuation Proxy</div><div class="kpiValue">€ 0</div></div>
+  <main class="wrap">
+    <div class="grid2">
+      <section class="card">
+        <div class="cardTitle">DAILY REVENUE TARGET</div>
+        <div class="grid3">
+          <div class="kpi">
+            <div class="kpiLabel">Target EOD</div>
+            <div class="kpiValue" id="targetEOD">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Actual Revenue</div>
+            <div class="kpiValue" id="actualRevenue">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Updated</div>
+            <div class="kpiValue small" id="updatedAt">—</div>
+          </div>
+        </div>
+        <div class="muted" id="periodLine">—</div>
+      </section>
+
+      <section class="card">
+        <div class="cardTitle">TODAY OPS (1D)</div>
+        <div class="grid4">
+          <div class="kpi">
+            <div class="kpiLabel">Links sent</div>
+            <div class="kpiValue" id="links1d">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Reminders sent</div>
+            <div class="kpiValue" id="reminders1d">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Paid</div>
+            <div class="kpiValue" id="paid1d">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Revenue</div>
+            <div class="kpiValue" id="revenue1d">—</div>
+          </div>
+        </div>
+        <div class="grid2 mt">
+          <div class="kpi">
+            <div class="kpiLabel">Active users (24h)</div>
+            <div class="kpiValue small" id="active24h">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">New users (range)</div>
+            <div class="kpiValue small" id="newUsersRange">—</div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
-</div>
 
+    <section class="card">
+      <div class="cardTitle">SALES & CONVERSIONS (range)</div>
+      <div class="grid5">
+        <div class="kpi">
+          <div class="kpiLabel">T1 Conversion</div>
+          <div class="kpiValue" id="t1Conv">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Upgrade T2→T3</div>
+          <div class="kpiValue" id="t2t3">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Upgrade Feet1→Feet2</div>
+          <div class="kpiValue" id="feetUp">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">ARPPU</div>
+          <div class="kpiValue" id="arppu">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Reminder Efficiency</div>
+          <div class="kpiValue" id="remEff">—</div>
+        </div>
+      </div>
+      <div class="muted">Nota: “Reminder Efficiency” = paid / reminders (se disponibile), altrimenti “—”.</div>
+    </section>
+
+    <section class="card">
+      <div class="cardTitle">TIERS BREAKDOWN (range)</div>
+      <div class="tableWrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Links</th>
+              <th>Rem1</th>
+              <th>Rem2</th>
+              <th>Paid</th>
+              <th>Revenue</th>
+              <th>Conv</th>
+              <th>Locks</th>
+              <th>Reentry</th>
+            </tr>
+          </thead>
+          <tbody id="tiersBody">
+            <tr><td colspan="9" class="muted">loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="cardTitle">MONEY & GROWTH</div>
+      <div class="grid4">
+        <div class="kpi">
+          <div class="kpiLabel">Revenue 7D</div>
+          <div class="kpiValue" id="rev7d">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Revenue 30D</div>
+          <div class="kpiValue" id="rev30d">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Growth Rate</div>
+          <div class="kpiValue" id="growthRate">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Valuation Proxy (rev30×10)</div>
+          <div class="kpiValue" id="valuationProxy">—</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
