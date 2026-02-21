@@ -1,44 +1,40 @@
 <!doctype html>
-<html lang="it">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Founder Command Center FULL v3</title>
-  <link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-  <header class="topbar">
-    <h1>FOUNDER COMMAND CENTER – FULL v3</h1>
-    <button onclick="load()">Refresh</button>
-  </header>
+Founder Command Center — FULL v3
+      <div class="dot"></div>
+      <div>
+        <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
+        <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="pill" id="statusPill">loading…</div>
+      <button class="btn" id="refreshBtn">Refresh</button>
+    </div>
 
-  <main>
-    <section class="panel">
-      <h2>Oggi</h2>
-      <div class="kpi">Link 1D: <span id="link1">—</span></div>
-      <div class="kpi">Reminder 1D: <span id="rem1">—</span></div>
-      <div class="kpi">Paid 1D: <span id="paid1">—</span></div>
-      <div class="kpi">Revenue 1D: <span id="rev1">—</span></div>
-      <div class="kpi">Oggi vs media 7D: <span id="delta">—</span></div>
+        <div class="cardTitle">DAILY REVENUE TARGET</div>
+        <div class="kpiRow">
+          <div class="kpi">
+            <div class="kpiLabel">Target EOD</div>
+            <div class="kpiValue" id="targetEod">€ 0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Actual Revenue</div>
+            <div class="kpiValue" id="actualRevenue">€ 0</div>
+          </div>
+        </div>
+        <div class="muted">Updated: <span id="updatedAt">—</span></div>
+      </div>
+      <div class="card">
+        <div class="cardTitle">MACHINE STATUS (1D)</div>
+        <div class="statusItem">Links: <span id="link1d">0</span></div>
+        <div class="statusItem">Reminders: <span id="rem1d">0</span></div>
+        <div class="statusItem">Paid: <span id="paid1d">0</span></div>
+        <div class="statusItem">Revenue: <span id="rev1d">€ 0</span></div>
+      </div>
+      <div class="card">
+        <div class="cardTitle">MONEY & GROWTH</div>
+        <div>Revenue 7D: <span id="rev7d">€ 0</span></div>
+        <div>Revenue 30D: <span id="rev30d">€ 0</span></div>
+        <div>Valuation Proxy: <span id="valuation">€ 0</span></div>
+      </div>
     </section>
-
-    <section class="panel">
-      <h2>Vendite & Conversioni (7D)</h2>
-      <div class="kpi">T1 Conversion: <span id="t1conv">—</span></div>
-      <div class="kpi">Upgrade T2→T3: <span id="upgrade">—</span></div>
-      <div class="kpi">ARPPU: <span id="arppu">—</span></div>
-      <div class="kpi">Reminder Efficiency: <span id="remeff">—</span></div>
-    </section>
-
-    <section class="panel">
-      <h2>Money & Growth</h2>
-      <div class="kpi">Revenue 7D: <span id="rev7">—</span></div>
-      <div class="kpi">Revenue 30D: <span id="rev30">—</span></div>
-      <div class="kpi">Growth Rate: <span id="growth">—</span></div>
-      <div class="kpi">Valuation Proxy (rev30×10): <span id="valuation">—</span></div>
-    </section>
-  </main>
-
-<script src="app.js"></script>
-</body>
-</html>
