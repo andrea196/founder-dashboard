@@ -1,34 +1,107 @@
 <!doctype html>
-Founder Command Center — FULL v3
-    <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
-    <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
-    <div class="actions">
-      <div class="pill" id="statusPill">loading…</div>
-      <button class="btn" id="refreshBtn" type="button">Refresh</button>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Founder Command Center — FULL v3</title>
+
+<style>
+:root{
+  --bg:#0f1117;
+  --panel:#171923;
+  --border:#2a2f3a;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+  --accent:#3b82f6;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  padding:28px;
+}
+.wrap{max-width:1000px;margin:auto;}
+.title{font-size:28px;font-weight:700;margin-bottom:6px;}
+.subtitle{color:var(--muted);font-size:14px;margin-bottom:20px;}
+.actions{display:flex;gap:12px;margin-bottom:24px;}
+.pill{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+  color:var(--muted);
+}
+.btn{
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+.cardTitle{font-size:16px;font-weight:600;margin-bottom:18px;}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+}
+.kpiLabel{font-size:13px;color:var(--muted);margin-bottom:6px;}
+.kpiValue{font-size:22px;font-weight:600;}
+.muted{color:var(--muted);font-size:13px;}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
+  <div class="subtitle">War Mode • Alert-first • Dynamic Target</div>
+
+  <div class="actions">
+    <div class="pill" id="statusPill">LIVE</div>
+    <button class="btn" id="refreshBtn">Refresh</button>
+  </div>
+
+  <div class="card">
+    <div class="cardTitle">DAILY REVENUE TARGET</div>
+    <div class="grid">
+      <div><div class="kpiLabel">Target EOD</div><div class="kpiValue">€ 0</div></div>
+      <div><div class="kpiLabel">Actual Revenue</div><div class="kpiValue">€ 0</div></div>
+      <div><div class="kpiLabel">Updated</div><div class="kpiValue muted">—</div></div>
     </div>
-    <div class="card">
-      <div class="cardTitle">DAILY REVENUE TARGET</div>
-      <div class="grid">
-        <div><div class="kpiLabel">Target EOD</div><div class="kpiValue" id="targetEOD">€ 0</div></div>
-        <div><div class="kpiLabel">Actual Revenue</div><div class="kpiValue" id="actualRevenue">€ 0</div></div>
-        <div><div class="kpiLabel">Updated</div><div class="kpiValue muted" id="updatedAt">—</div></div>
-      </div>
+  </div>
+
+  <div class="card">
+    <div class="cardTitle">MACHINE STATUS (1D)</div>
+    <div class="grid">
+      <div><div class="kpiLabel">Links</div><div class="kpiValue">0</div></div>
+      <div><div class="kpiLabel">Reminders</div><div class="kpiValue">0</div></div>
+      <div><div class="kpiLabel">Paid</div><div class="kpiValue">0</div></div>
+      <div><div class="kpiLabel">Revenue</div><div class="kpiValue">€ 0</div></div>
     </div>
-    <div class="card">
-      <div class="cardTitle">MACHINE STATUS (1D)</div>
-      <div class="grid">
-        <div><div class="kpiLabel">Links</div><div class="kpiValue" id="links1d">0</div></div>
-        <div><div class="kpiLabel">Reminders</div><div class="kpiValue" id="reminders1d">0</div></div>
-        <div><div class="kpiLabel">Paid</div><div class="kpiValue" id="paid1d">0</div></div>
-        <div><div class="kpiLabel">Revenue</div><div class="kpiValue" id="rev1d">€ 0</div></div>
-      </div>
+  </div>
+
+  <div class="card">
+    <div class="cardTitle">MONEY & GROWTH</div>
+    <div class="grid">
+      <div><div class="kpiLabel">Revenue 7D</div><div class="kpiValue">€ 0</div></div>
+      <div><div class="kpiLabel">Revenue 30D</div><div class="kpiValue">€ 0</div></div>
+      <div><div class="kpiLabel">Growth Rate</div><div class="kpiValue">—</div></div>
+      <div><div class="kpiLabel">Valuation Proxy</div><div class="kpiValue">€ 0</div></div>
     </div>
-    <div class="card">
-      <div class="cardTitle">MONEY & GROWTH</div>
-      <div class="grid">
-        <div><div class="kpiLabel">Revenue 7D</div><div class="kpiValue" id="rev7d">€ 0</div></div>
-        <div><div class="kpiLabel">Revenue 30D</div><div class="kpiValue" id="rev30d">€ 0</div></div>
-        <div><div class="kpiLabel">Growth Rate</div><div class="kpiValue" id="growthRate">—</div></div>
-        <div><div class="kpiLabel">Valuation Proxy (rev30×10)</div><div class="kpiValue" id="valuationProxy">€ 0</div></div>
-      </div>
-    </div>
+  </div>
+</div>
+
+</body>
+</html>
