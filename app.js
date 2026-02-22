@@ -94,10 +94,11 @@ function buildReentryBreakdown(reentry) {
   }
 
   for (const k of kinds) {
-    const sent  = reentry?.link_sent?.by_kind?.[k] ?? 0;
-    const paid  = reentry?.paid?.by_kind?.[k] ?? 0;
-    const rev   = reentry?.revenue_cents?.by_kind?.[k] ?? 0;
-    const cvr   = reentry?.cvr?.by_kind?.[k];
+    // worker scrive flat: reentry.link_sent[tier], NON reentry.link_sent.by_kind[tier]
+    const sent  = reentry?.link_sent?.[k] ?? 0;
+    const paid  = reentry?.paid?.[k] ?? 0;
+    const rev   = reentry?.revenue_cents?.[k] ?? 0;
+    const cvr   = reentry?.cvr?.[k];
 
     const cvrStr = typeof cvr === "number"
       ? (cvr * 100).toLocaleString("it-IT", { maximumFractionDigits: 1 }) + "%"
