@@ -7,6 +7,7 @@
   --muted2:rgba(255,255,255,.48);
   --accent:#4aa3ff;
   --good:#3ddc97;
+  --reentry:#f59e42;
   --shadow:0 12px 38px rgba(0,0,0,.45);
 }
 
@@ -83,6 +84,7 @@ body{
 .grid6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
 
 .kpi{padding:10px;border:1px solid var(--stroke);border-radius:14px;background:rgba(0,0,0,.18)}
+.kpi--accent{border-color:rgba(245,158,66,.25);background:rgba(245,158,66,.05)}
 .kpiLabel{font-size:11px;color:var(--muted2);text-transform:uppercase;letter-spacing:.08em}
 .kpiValue{margin-top:6px;font-size:18px;font-weight:950}
 .note{margin-top:10px;color:var(--muted);font-size:12px}
@@ -98,6 +100,15 @@ body{
 .rLabel{color:var(--muted);font-weight:800}
 .rVal{font-weight:950;text-align:right}
 
+/* REENTRY breakdown grid */
+.reentryGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:4px}
+.reentryBox{padding:10px;border:1px solid rgba(245,158,66,.22);border-radius:14px;background:rgba(245,158,66,.04)}
+.reentryBoxName{font-weight:950;font-size:12px;color:var(--reentry);text-transform:uppercase;margin-bottom:8px}
+.reentryRows{display:grid;grid-template-columns:1fr;gap:4px}
+.reentryRow{display:flex;justify-content:space-between;gap:6px}
+.reentryRowLabel{color:var(--muted2);font-size:11px}
+.reentryRowVal{font-weight:900;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+
 .upGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .upBox{padding:10px;border:1px solid var(--stroke);border-radius:14px;background:rgba(0,0,0,.16)}
 .upKey{color:var(--muted);font-weight:900;font-size:12px}
@@ -112,4 +123,5 @@ body{
   .grid3{grid-template-columns:repeat(2,1fr)}
   .tierGrid{grid-template-columns:1fr}
   .upGrid{grid-template-columns:repeat(2,1fr)}
+  .reentryGrid{grid-template-columns:repeat(2,1fr)}
 }
