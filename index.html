@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FOUNDER COMMAND CENTER — FULL v3 (WAR ROOM)</title>
+  <title>FOUNDER COMMAND CENTER — FULL v4 (WAR ROOM)</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="wrap">
     <header class="topbar">
       <div>
-        <div class="title">FOUNDER COMMAND CENTER — FULL v3</div>
+        <div class="title">FOUNDER COMMAND CENTER — v4</div>
         <div class="subtitle">War Room • Alert-first • Dynamic Range</div>
       </div>
 
@@ -31,6 +31,7 @@
       </div>
     </header>
 
+    <!-- STATUS BANNER -->
     <div class="banner" id="statusBanner">
       <div class="statusLeft">
         <div class="statusTitle">Status</div>
@@ -56,6 +57,7 @@
       </div>
     </div>
 
+    <!-- REVENUE & GROWTH -->
     <section class="grid2">
       <div class="card">
         <div class="cardTitle">DAILY REVENUE TARGET</div>
@@ -73,7 +75,7 @@
             <div class="kpiValue mono" id="updatedAt">—</div>
           </div>
         </div>
-        <div class="note">Nota: Target è opzionale (se non lo imposti in app.js resta “—”).</div>
+        <div class="note">Target opzionale — impostalo in app.js.</div>
       </div>
 
       <div class="card">
@@ -84,21 +86,22 @@
             <div class="kpiValue" id="revRange">—</div>
           </div>
           <div class="kpi">
-            <div class="kpiLabel">Paid (range)</div>
-            <div class="kpiValue" id="paidRange">—</div>
+            <div class="kpiLabel">Revenue 7D</div>
+            <div class="kpiValue" id="rev7d">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpiLabel">Revenue 30D</div>
+            <div class="kpiValue" id="rev30d">—</div>
           </div>
           <div class="kpi">
             <div class="kpiLabel">ARPPU (range)</div>
             <div class="kpiValue" id="arppu">—</div>
           </div>
-          <div class="kpi">
-            <div class="kpiLabel">Revenue / Active (24h)</div>
-            <div class="kpiValue" id="revPerActive">—</div>
-          </div>
         </div>
       </div>
     </section>
 
+    <!-- OPS -->
     <section class="card">
       <div class="cardTitle">OPS & SYSTEM SIGNALS</div>
       <div class="grid6">
@@ -111,37 +114,65 @@
           <div class="kpiValue" id="newUsersRange">—</div>
         </div>
         <div class="kpi">
-          <div class="kpiLabel">Reminders sent (total)</div>
-          <div class="kpiValue" id="remindersTotal">—</div>
+          <div class="kpiLabel">Paid (range)</div>
+          <div class="kpiValue" id="paidRange">—</div>
         </div>
         <div class="kpi">
-          <div class="kpiLabel">Reentry used (total)</div>
-          <div class="kpiValue" id="reentryTotal">—</div>
+          <div class="kpiLabel">Revenue / Active</div>
+          <div class="kpiValue" id="revPerActive">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiLabel">Reminders sent</div>
+          <div class="kpiValue" id="remindersTotal">—</div>
         </div>
         <div class="kpi">
           <div class="kpiLabel">Locks set (total)</div>
           <div class="kpiValue" id="locksTotal">—</div>
         </div>
-        <div class="kpi">
-          <div class="kpiLabel">T2→T3 upgrade (range)</div>
-          <div class="kpiValue" id="t2t3Upgrade">—</div>
-        </div>
       </div>
     </section>
 
+    <!-- FUNNEL BY TIER -->
     <section class="card">
       <div class="cardTitle">FUNNEL BY TIER (RANGE)</div>
       <div class="tierGrid" id="tierGrid"></div>
-      <div class="note">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → “—”).</div>
+      <div class="note">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → "—").</div>
     </section>
 
+    <!-- REENTRY — card nuova v4 -->
+    <section class="card" id="reentryCard">
+      <div class="cardTitle">🔁 REENTRY ANALYTICS</div>
+      <div class="grid4" style="margin-bottom:14px">
+        <div class="kpi kpi--accent">
+          <div class="kpiLabel">Links Sent (total)</div>
+          <div class="kpiValue" id="reentryLinkSent">—</div>
+        </div>
+        <div class="kpi kpi--accent">
+          <div class="kpiLabel">Paid (total)</div>
+          <div class="kpiValue" id="reentryPaid">—</div>
+        </div>
+        <div class="kpi kpi--accent">
+          <div class="kpiLabel">Revenue (total)</div>
+          <div class="kpiValue" id="reentryRevenue">—</div>
+        </div>
+        <div class="kpi kpi--accent">
+          <div class="kpiLabel">Conversion Rate</div>
+          <div class="kpiValue" id="reentryCVR">—</div>
+        </div>
+      </div>
+      <div class="cardTitle" style="margin-top:4px">BREAKDOWN PER TIER</div>
+      <div class="reentryGrid" id="reentryBreakdown"></div>
+      <div class="note">Reentry = acquisto su piano *_reentry dopo scadenza/drop. Paid solo su webhook Whop confermato.</div>
+    </section>
+
+    <!-- UPGRADES -->
     <section class="card">
       <div class="cardTitle">UPGRADES (RANGE)</div>
       <div class="upGrid" id="upgradesGrid"></div>
     </section>
 
     <footer class="footer">
-      <span class="muted">v3 • War Room dashboard (static) • Data source: /api/metrics</span>
+      <span class="muted">v4 • War Room dashboard • Data source: /api/metrics</span>
     </footer>
   </div>
 
