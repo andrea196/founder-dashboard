@@ -1,29 +1,32 @@
-// Dashboard App v6 — fix: resilient fetches, no loading freeze
+// Dashboard App v7 — fix definitivo loading + WORKER_URL esplicito
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-// Se dashboard è su Pages (dominio diverso dal worker), metti qui l'URL del worker.
-// Se stesso dominio, lascia "".
-const WORKER_URL = window.WORKER_URL || "";
+// URL del worker Cloudflare — DEVE essere l'URL completo se dashboard è su Pages
+const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
 
 function getAuthHeaders() {
-  const tok = window.DASH_TOKEN || "123";
+  const tok = (typeof window !== "undefined" && window.DASH_TOKEN) || "123";
   return { "X-DASH-TOKEN": tok, "X-API-Key": tok };
 }
 
 let currentRange = "1d";
 let cachedData = {};
+let isLoading = false;
 
-// ─── FETCH — resiliente, non butta giù tutto se 1 range fallisce ──────────────
+// ─── FETCH ────────────────────────────────────────────────────────────────────
 
 async function fetchMetrics(range) {
   try {
     const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, {
       headers: getAuthHeaders()
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      console.warn(`[Dashboard] /metrics?range=${range} → HTTP ${res.status}`);
+      return null;
+    }
     return await res.json();
   } catch(e) {
-    console.warn(`[Dashboard] fetchMetrics(${range}) failed:`, e.message);
+    console.warn(`[Dashboard] fetchMetrics(${range}) error:`, e.message);
     return null;
   }
 }
@@ -31,31 +34,64 @@ async function fetchMetrics(range) {
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
 async function init() {
-  setLoading(true);
-  hideError();
+  if (isLoading) return;
+  isLoading = true;
+  setSpinner(true);
+  setBanner(null);
 
-  const [d1, d7, d30] = await Promise.all([
-    fetchMetrics("1d"),
-    fetchMetrics("7d"),
-    fetchMetrics("30d")
-  ]);
+  try {
+    const [d1, d7, d30] = await Promise.all([
+      fetchMetrics("1d"),
+      fetchMetrics("7d"),
+      fetchMetrics("30d")
+    ]);
 
-  cachedData = { "1d": d1, "7d": d7, "30d": d30 };
+    cachedData = { "1d": d1, "7d": d7, "30d": d30 };
 
-  if (!d1 && !d7 && !d30) {
-    showError("Impossibile caricare dati. Verifica WORKER_URL e DASH_TOKEN.");
-    setLoading(false);
-    return;
+    if (!d1 && !d7 && !d30) {
+      setBanner("❌ Nessun dato disponibile — controlla che il worker sia raggiungibile e DASH_TOKEN sia corretto.");
+    } else {
+      renderAll();
+    }
+  } catch(e) {
+    setBanner("❌ Errore: " + e.message);
+  } finally {
+    isLoading = false;
+    setSpinner(false);
   }
-
-  renderAll();
-  setLoading(false);
 }
 
+// ─── RANGE SELECTOR ───────────────────────────────────────────────────────────
+
+function setupUI() {
+  document.querySelectorAll(".range-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentRange = btn.dataset.range;
+      renderAll();
+    });
+  });
+
+  const refreshBtn = document.getElementById("refresh-btn");
+  if (refreshBtn) refreshBtn.addEventListener("click", () => { isLoading = false; init(); });
+
+  init();
+}
+
+// Chiama setupUI sia su DOMContentLoaded che subito (per script caricati in fondo)
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupUI);
+} else {
+  setupUI();
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+
 function renderAll() {
-  const d1  = cachedData["1d"];
-  const d7  = cachedData["7d"];
-  const d30 = cachedData["30d"];
+  const d1     = cachedData["1d"];
+  const d7     = cachedData["7d"];
+  const d30    = cachedData["30d"];
   const active = cachedData[currentRange];
 
   renderRevenueBar(d1, d7, d30);
@@ -70,31 +106,12 @@ function renderAll() {
   }
 }
 
-// ─── RANGE SELECTOR ───────────────────────────────────────────────────────────
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".range-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentRange = btn.dataset.range;
-      renderAll();
-    });
-  });
-  document.getElementById("refresh-btn")?.addEventListener("click", init);
-  init();
-});
-
-// ─── FORMAT ───────────────────────────────────────────────────────────────────
-
 function fmt(n, type) {
   if (n === null || n === undefined) return "—";
   if (type === "eur") return "€" + (n / 100).toFixed(2);
   if (type === "pct") return (n * 100).toFixed(1) + "%";
   return Number(n).toLocaleString("it-IT");
 }
-
-// ─── RENDER ───────────────────────────────────────────────────────────────────
 
 function renderRevenueBar(d1, d7, d30) {
   setEl("rev-1d",  fmt(d1?.kpi?.revenue_range_cents, "eur"));
@@ -113,7 +130,7 @@ function renderKPIs(data) {
 
 function renderTierGrid(data) {
   const tiers  = data?.tiers || {};
-  const keys   = ["t1", "t2", "t3", "feet1", "feet2"];
+  const keys   = ["t1","t2","t3","feet1","feet2"];
   const labels = { t1:"T1", t2:"T2", t3:"T3", feet1:"FEET1", feet2:"FEET2" };
   const grid   = document.getElementById("tier-grid");
   if (!grid) return;
@@ -177,20 +194,21 @@ function renderReentry(data) {
   setEl("re-total-rev",  fmt(re.revenue_cents?.total, "eur"));
   setEl("re-total-cvr",  re.cvr?.total != null ? fmt(re.cvr.total,"pct") : "—");
 
-  const grid   = document.getElementById("reentry-breakdown");
+  const grid = document.getElementById("reentry-breakdown");
   if (!grid) return;
   grid.innerHTML = "";
 
   const kinds  = ["tier1_reentry","tier2_reentry","tier3_reentry","feet1_reentry","feet2_reentry"];
-  const labels = { tier1_reentry:"T1 Reentry", tier2_reentry:"T2 Reentry",
-                   tier3_reentry:"T3 Reentry", feet1_reentry:"FEET1 Reentry", feet2_reentry:"FEET2 Reentry" };
+  const labels = {
+    tier1_reentry:"T1 Reentry", tier2_reentry:"T2 Reentry", tier3_reentry:"T3 Reentry",
+    feet1_reentry:"FEET1 Reentry", feet2_reentry:"FEET2 Reentry"
+  };
 
   for (const k of kinds) {
     const sent = re.link_sent?.[k]     ?? 0;
     const paid = re.paid?.[k]          ?? 0;
     const rev  = re.revenue_cents?.[k] ?? 0;
     const cvr  = re.cvr?.[k]           ?? null;
-
     const card = document.createElement("div");
     card.className = "reentry-card";
     card.innerHTML = `
@@ -211,18 +229,17 @@ function setEl(id, val) {
   if (el) el.textContent = val ?? "—";
 }
 
-function setLoading(on) {
+function setSpinner(on) {
   const s = document.getElementById("spinner");
   if (s) s.style.display = on ? "block" : "none";
 }
 
-function hideError() {
+function setBanner(msg) {
   const el = document.getElementById("error-banner");
-  if (el) el.style.display = "none";
-}
-
-function showError(msg) {
-  const el = document.getElementById("error-banner");
-  if (el) { el.textContent = "Errore: " + msg; el.style.display = "block"; }
-  console.error("[Dashboard]", msg);
+  if (!el) {
+    if (msg) console.error("[Dashboard]", msg);
+    return;
+  }
+  if (msg) { el.textContent = msg; el.style.display = "block"; }
+  else { el.style.display = "none"; }
 }
