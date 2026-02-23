@@ -1,245 +1,212 @@
-// Dashboard App v7 — fix definitivo loading + WORKER_URL esplicito
+// Dashboard App v8 — ID allineati all'index.html reale
 
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// URL del worker Cloudflare — DEVE essere l'URL completo se dashboard è su Pages
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
+const DASH_TOKEN = "123";
 
-function getAuthHeaders() {
-  const tok = (typeof window !== "undefined" && window.DASH_TOKEN) || "123";
-  return { "X-DASH-TOKEN": tok, "X-API-Key": tok };
+function authHeaders() {
+  return { "X-DASH-TOKEN": DASH_TOKEN, "X-API-Key": DASH_TOKEN };
 }
 
-let currentRange = "1d";
-let cachedData = {};
-let isLoading = false;
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentRange = "7d"; // default = 7D (selected nell'HTML)
+let cache = {};
+let loading = false;
 
 // ─── FETCH ────────────────────────────────────────────────────────────────────
-
 async function fetchMetrics(range) {
   try {
-    const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, {
-      headers: getAuthHeaders()
-    });
-    if (!res.ok) {
-      console.warn(`[Dashboard] /metrics?range=${range} → HTTP ${res.status}`);
-      return null;
-    }
+    const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, { headers: authHeaders() });
+    if (!res.ok) { console.warn(`metrics ${range} → ${res.status}`); return null; }
     return await res.json();
-  } catch(e) {
-    console.warn(`[Dashboard] fetchMetrics(${range}) error:`, e.message);
-    return null;
-  }
+  } catch(e) { console.warn(`metrics ${range} error:`, e.message); return null; }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-
 async function init() {
-  if (isLoading) return;
-  isLoading = true;
-  setSpinner(true);
-  setBanner(null);
+  if (loading) return;
+  loading = true;
+  setStatus("loading…");
 
-  try {
-    const [d1, d7, d30] = await Promise.all([
-      fetchMetrics("1d"),
-      fetchMetrics("7d"),
-      fetchMetrics("30d")
-    ]);
+  const [d1, d7, d30] = await Promise.all([
+    fetchMetrics("1d"), fetchMetrics("7d"), fetchMetrics("30d")
+  ]);
 
-    cachedData = { "1d": d1, "7d": d7, "30d": d30 };
+  cache = { "1d": d1, "7d": d7, "30d": d30 };
+  loading = false;
 
-    if (!d1 && !d7 && !d30) {
-      setBanner("❌ Nessun dato disponibile — controlla che il worker sia raggiungibile e DASH_TOKEN sia corretto.");
-    } else {
-      renderAll();
-    }
-  } catch(e) {
-    setBanner("❌ Errore: " + e.message);
-  } finally {
-    isLoading = false;
-    setSpinner(false);
+  if (!d1 && !d7 && !d30) {
+    setStatus("❌ Nessun dato — worker non raggiungibile o token errato");
+    return;
   }
-}
 
-// ─── RANGE SELECTOR ───────────────────────────────────────────────────────────
-
-function setupUI() {
-  document.querySelectorAll(".range-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentRange = btn.dataset.range;
-      renderAll();
-    });
-  });
-
-  const refreshBtn = document.getElementById("refresh-btn");
-  if (refreshBtn) refreshBtn.addEventListener("click", () => { isLoading = false; init(); });
-
-  init();
-}
-
-// Chiama setupUI sia su DOMContentLoaded che subito (per script caricati in fondo)
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", setupUI);
-} else {
-  setupUI();
+  render();
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const d   = cache[currentRange];
+  const d7  = cache["7d"];
+  const d30 = cache["30d"];
+  if (!d) { setStatus("⚠️ Dati non disponibili per questo range"); return; }
 
-function renderAll() {
-  const d1     = cachedData["1d"];
-  const d7     = cachedData["7d"];
-  const d30    = cachedData["30d"];
-  const active = cachedData[currentRange];
+  // Status banner
+  const p = d.period || {};
+  setStatus("✅ OK");
+  setText("metaRange",  d.range || currentRange);
+  setText("metaFrom",   p.from || "—");
+  setText("metaTo",     p.to   || "—");
+  setText("metaGen",    d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—");
 
-  renderRevenueBar(d1, d7, d30);
-  if (active) {
-    renderKPIs(active);
-    renderTierGrid(active);
-    renderUpgrades(active);
-    renderLevers(active);
-    renderOps(active);
-    renderReentry(active);
-    renderMeta(active);
-  }
+  // Money & growth
+  const k = d.kpi || {};
+  setText("revRange",   eur(k.revenue_range_cents));
+  setText("rev7d",      eur(d7?.kpi?.revenue_range_cents));
+  setText("rev30d",     eur(d30?.kpi?.revenue_range_cents));
+  setText("arppu",      eur(k.arppu_range_cents));
+  setText("actualRevenue", eur(k.revenue_range_cents));
+  setText("updatedAt",  d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—");
+
+  // OPS
+  const ops = d.ops || {};
+  const levers = d.levers || {};
+  setText("active24h",     num(ops.active_users_24h));
+  setText("newUsersRange", num(ops.new_users_range));
+  setText("paidRange",     num(k.total_paid_range));
+  setText("remindersTotal",num(levers.reminder_sent_total));
+  setText("locksTotal",    num(levers.locks_set_total));
+
+  const revPerActive = (ops.active_users_24h > 0 && k.revenue_range_cents > 0)
+    ? eur(Math.round(k.revenue_range_cents / ops.active_users_24h))
+    : "—";
+  setText("revPerActive", revPerActive);
+
+  // Tier grid
+  renderTiers(d.tiers || {});
+
+  // Reentry
+  renderReentry(d.reentry);
+
+  // Upgrades
+  renderUpgrades(d.upgrades || {});
 }
 
-function fmt(n, type) {
-  if (n === null || n === undefined) return "—";
-  if (type === "eur") return "€" + (n / 100).toFixed(2);
-  if (type === "pct") return (n * 100).toFixed(1) + "%";
-  return Number(n).toLocaleString("it-IT");
-}
-
-function renderRevenueBar(d1, d7, d30) {
-  setEl("rev-1d",  fmt(d1?.kpi?.revenue_range_cents, "eur"));
-  setEl("rev-7d",  fmt(d7?.kpi?.revenue_range_cents, "eur"));
-  setEl("rev-30d", fmt(d30?.kpi?.revenue_range_cents, "eur"));
-}
-
-function renderKPIs(data) {
-  const k = data?.kpi || {};
-  setEl("kpi-revenue", fmt(k.revenue_range_cents, "eur"));
-  setEl("kpi-paid",    fmt(k.total_paid_range));
-  setEl("kpi-t1conv",  fmt(k.t1_conversion_range, "pct"));
-  setEl("kpi-t2t3upg", fmt(k.t2_to_t3_upgrade_range, "pct"));
-  setEl("kpi-arppu",   fmt(k.arppu_range_cents, "eur"));
-}
-
-function renderTierGrid(data) {
-  const tiers  = data?.tiers || {};
-  const keys   = ["t1","t2","t3","feet1","feet2"];
-  const labels = { t1:"T1", t2:"T2", t3:"T3", feet1:"FEET1", feet2:"FEET2" };
-  const grid   = document.getElementById("tier-grid");
+function renderTiers(tiers) {
+  const grid = document.getElementById("tierGrid");
   if (!grid) return;
   grid.innerHTML = "";
 
-  for (const t of keys) {
-    const d = tiers[t] || {};
+  const TIERS = [
+    { key:"t1", label:"T1" },
+    { key:"t2", label:"T2" },
+    { key:"t3", label:"T3" },
+    { key:"feet1", label:"FEET1" },
+    { key:"feet2", label:"FEET2" },
+  ];
+
+  for (const { key, label } of TIERS) {
+    const t = tiers[key] || {};
+    const cr = (t.link_sent_range > 0 && t.paid_range > 0)
+      ? pct(t.paid_range / t.link_sent_range) : "—";
     const card = document.createElement("div");
-    card.className = "tier-card";
+    card.className = "tierCard";
     card.innerHTML = `
-      <h3>${labels[t]}</h3>
-      <div class="tier-stat"><span>Link sent</span><strong>${fmt(d.link_sent_range)}</strong></div>
-      <div class="tier-stat"><span>Paid</span><strong>${fmt(d.paid_range)}</strong></div>
-      <div class="tier-stat"><span>CR</span><strong>${d.conversion_range ? fmt(d.conversion_range,"pct") : "—"}</strong></div>
-      <div class="tier-stat secondary"><span>Reminder 1</span><strong>${fmt(d.reminder1_sent_range)}</strong></div>
-      <div class="tier-stat secondary"><span>Reminder 2</span><strong>${fmt(d.reminder2_sent_range)}</strong></div>
-      <div class="tier-stat secondary"><span>Reentry used</span><strong>${fmt(d.reentry_used_range)}</strong></div>
-      <div class="tier-stat secondary"><span>Locks set</span><strong>${fmt(d.lock_set_range)}</strong></div>
+      <div class="tierHead">
+        <span class="tierName">${label}</span>
+        <span class="tierRate">CR ${cr}</span>
+      </div>
+      <div class="rows">
+        <span class="rLabel">Link sent</span><span class="rVal">${num(t.link_sent_range)}</span>
+        <span class="rLabel">Paid</span><span class="rVal">${num(t.paid_range)}</span>
+        <span class="rLabel">Reminder 1</span><span class="rVal">${num(t.reminder1_sent_range)}</span>
+        <span class="rLabel">Reminder 2</span><span class="rVal">${num(t.reminder2_sent_range)}</span>
+        <span class="rLabel">Reentry used</span><span class="rVal">${num(t.reentry_used_range)}</span>
+        <span class="rLabel">Locks set</span><span class="rVal">${num(t.lock_set_range)}</span>
+      </div>
     `;
     grid.appendChild(card);
   }
 }
 
-function renderUpgrades(data) {
-  const u = data?.upgrades || {};
-  setEl("upg-t1t2",  fmt(u.t1_to_t2));
-  setEl("upg-t2t3",  fmt(u.t2_to_t3));
-  setEl("upg-feet1", fmt(u.to_feet1));
-  setEl("upg-feet2", fmt(u.to_feet2));
-}
+function renderReentry(re) {
+  if (!re) return;
+  setText("reentryLinkSent", num(re.link_sent?.total));
+  setText("reentryPaid",     num(re.paid?.total));
+  setText("reentryRevenue",  eur(re.revenue_cents?.total));
+  setText("reentryCVR", re.cvr?.total != null ? pct(re.cvr.total) : "—");
 
-function renderLevers(data) {
-  const l = data?.levers || {};
-  setEl("lev-reminder", fmt(l.reminder_sent_total));
-  setEl("lev-reentry",  fmt(l.reentry_used_total));
-  setEl("lev-locks",    fmt(l.locks_set_total));
-}
-
-function renderOps(data) {
-  const o = data?.ops || {};
-  setEl("ops-active", fmt(o.active_users_24h));
-  setEl("ops-new",    fmt(o.new_users_range));
-}
-
-function renderMeta(data) {
-  const el = document.getElementById("meta-generated");
-  if (el && data?.generated_at)
-    el.textContent = "Aggiornato: " + new Date(data.generated_at).toLocaleString("it-IT");
-}
-
-function renderReentry(data) {
-  const re  = data?.reentry;
-  const sec = document.getElementById("reentry-section");
-  if (!re) {
-    if (sec) sec.innerHTML = "<p style='color:#888;padding:16px'>Nessun dato reentry.</p>";
-    return;
-  }
-
-  setEl("re-total-sent", fmt(re.link_sent?.total));
-  setEl("re-total-paid", fmt(re.paid?.total));
-  setEl("re-total-rev",  fmt(re.revenue_cents?.total, "eur"));
-  setEl("re-total-cvr",  re.cvr?.total != null ? fmt(re.cvr.total,"pct") : "—");
-
-  const grid = document.getElementById("reentry-breakdown");
+  const grid = document.getElementById("reentryBreakdown");
   if (!grid) return;
   grid.innerHTML = "";
 
-  const kinds  = ["tier1_reentry","tier2_reentry","tier3_reentry","feet1_reentry","feet2_reentry"];
-  const labels = {
-    tier1_reentry:"T1 Reentry", tier2_reentry:"T2 Reentry", tier3_reentry:"T3 Reentry",
-    feet1_reentry:"FEET1 Reentry", feet2_reentry:"FEET2 Reentry"
-  };
+  const kinds = [
+    { key:"tier1_reentry", label:"T1" },
+    { key:"tier2_reentry", label:"T2" },
+    { key:"tier3_reentry", label:"T3" },
+    { key:"feet1_reentry", label:"FEET1" },
+    { key:"feet2_reentry", label:"FEET2" },
+  ];
 
-  for (const k of kinds) {
-    const sent = re.link_sent?.[k]     ?? 0;
-    const paid = re.paid?.[k]          ?? 0;
-    const rev  = re.revenue_cents?.[k] ?? 0;
-    const cvr  = re.cvr?.[k]           ?? null;
-    const card = document.createElement("div");
-    card.className = "reentry-card";
-    card.innerHTML = `
-      <h4>${labels[k]}</h4>
-      <div class="tier-stat"><span>Link sent</span><strong>${fmt(sent)}</strong></div>
-      <div class="tier-stat"><span>Paid</span><strong>${fmt(paid)}</strong></div>
-      <div class="tier-stat"><span>Revenue</span><strong>${fmt(rev,"eur")}</strong></div>
-      <div class="tier-stat"><span>CVR</span><strong>${cvr != null ? fmt(cvr,"pct") : "—"}</strong></div>
+  for (const { key, label } of kinds) {
+    const sent = re.link_sent?.[key] ?? 0;
+    const paid = re.paid?.[key]      ?? 0;
+    const rev  = re.revenue_cents?.[key] ?? 0;
+    const cvr  = re.cvr?.[key] ?? null;
+    const box = document.createElement("div");
+    box.className = "reentryBox";
+    box.innerHTML = `
+      <div class="reentryBoxName">${label}</div>
+      <div class="reentryRows">
+        <div class="reentryRow"><span class="reentryRowLabel">Sent</span><span class="reentryRowVal">${num(sent)}</span></div>
+        <div class="reentryRow"><span class="reentryRowLabel">Paid</span><span class="reentryRowVal">${num(paid)}</span></div>
+        <div class="reentryRow"><span class="reentryRowLabel">Rev</span><span class="reentryRowVal">${eur(rev)}</span></div>
+        <div class="reentryRow"><span class="reentryRowLabel">CVR</span><span class="reentryRowVal">${cvr != null ? pct(cvr) : "—"}</span></div>
+      </div>
     `;
-    grid.appendChild(card);
+    grid.appendChild(box);
   }
+}
+
+function renderUpgrades(u) {
+  const grid = document.getElementById("upgradesGrid");
+  if (!grid) return;
+  const items = [
+    { label:"T1→T2", val: u.t1_to_t2 },
+    { label:"T2→T3", val: u.t2_to_t3 },
+    { label:"→FEET1", val: u.to_feet1 },
+    { label:"→FEET2", val: u.to_feet2 },
+  ];
+  grid.innerHTML = items.map(({ label, val }) => `
+    <div class="upBox">
+      <div class="upKey">${label}</div>
+      <div class="upVal">${num(val)}</div>
+    </div>
+  `).join("");
 }
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-
-function setEl(id, val) {
+function setText(id, v) {
   const el = document.getElementById(id);
-  if (el) el.textContent = val ?? "—";
+  if (el) el.textContent = (v === null || v === undefined) ? "—" : v;
 }
+function setStatus(msg) { setText("statusMsg", msg); }
+function eur(n) { return (n == null) ? "—" : "€" + (n / 100).toFixed(2); }
+function num(n) { return (n == null) ? "—" : Number(n).toLocaleString("it-IT"); }
+function pct(n) { return (n == null) ? "—" : (n * 100).toFixed(1) + "%"; }
 
-function setSpinner(on) {
-  const s = document.getElementById("spinner");
-  if (s) s.style.display = on ? "block" : "none";
-}
-
-function setBanner(msg) {
-  const el = document.getElementById("error-banner");
-  if (!el) {
-    if (msg) console.error("[Dashboard]", msg);
-    return;
+// ─── RANGE SELECT + REFRESH ───────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("rangeSelect");
+  if (sel) {
+    sel.value = currentRange;
+    sel.addEventListener("change", () => {
+      currentRange = sel.value;
+      if (cache[currentRange]) render();
+      else init();
+    });
   }
-  if (msg) { el.textContent = msg; el.style.display = "block"; }
-  else { el.style.display = "none"; }
-}
+
+  const btn = document.getElementById("refreshBtn");
+  if (btn) btn.addEventListener("click", () => { loading = false; init(); });
+
+  init();
+});
