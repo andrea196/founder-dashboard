@@ -648,13 +648,14 @@
 </div><!-- /main -->
 
 <div class="footer">
-  <span>v5 • War Room dashboard • Data source: /api/metrics</span>
+  <span>v5 • War Room dashboard • Data source: /metrics</span>
   <span id="footer-ts">—</span>
 </div>
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────
 const API_BASE = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
+const API_KEY  = "123";  // X-API-Key — stesso valore di AdminKey
 const DAILY_TARGET_EUR = null; // es. 50 → mostra barra
 // ──────────────────────────────────────────────────────────────
 
@@ -683,7 +684,10 @@ function setClass(id, cls) {
 }
 
 async function fetchRange(range) {
-  const r = await fetch(`${API_BASE}/api/metrics?range=${range}`, { cache: "no-store" });
+  const r = await fetch(`${API_BASE}/metrics?range=${range}`, {
+    cache: "no-store",
+    headers: { "X-API-Key": API_KEY }
+  });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
 }
