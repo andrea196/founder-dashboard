@@ -131,6 +131,41 @@
   }
   .btn-refresh:hover { border-color: var(--accent3); color: var(--accent3); }
   .btn-refresh.loading { color: var(--yellow); border-color: var(--yellow); }
+  .btn-resetdash {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 14px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .btn-resetdash:hover { border-color: var(--red); color: var(--red); }
+  .btn-resetdash.loading { color: var(--yellow); border-color: var(--yellow); animation: pulse 0.8s infinite; }
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+  .confirm-overlay.show { display: flex; }
+  .confirm-box {
+    background: var(--surface);
+    border: 1px solid var(--red);
+    padding: 28px 32px;
+    min-width: 320px;
+    font-family: var(--mono);
+  }
+  .confirm-box h3 { font-family: var(--sans); font-size: 14px; color: var(--red); margin-bottom: 10px; letter-spacing: 0.05em; }
+  .confirm-box p { font-size: 11px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
   /* ── STATUS BAR ── */
   .status-bar {
@@ -422,6 +457,7 @@
     <button class="btn" data-range="30d">30D</button>
   </div>
   <button class="btn-refresh" id="btn-refresh">↺ Refresh</button>
+  <button class="btn-resetdash" id="btn-resetdash">⚠ Reset Dash</button>
 </div>
 
 <!-- STATUS BAR -->
@@ -650,6 +686,18 @@
 <div class="footer">
   <span>v5 • War Room dashboard • Data source: /metrics</span>
   <span id="footer-ts">—</span>
+</div>
+
+<!-- CONFIRM OVERLAY -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3>⚠ RESET DASHBOARD</h3>
+    <p>Azzera tutti i dati METRICS_KV degli ultimi 30 giorni.<br>Operazione irreversibile — usare solo per test.</p>
+    <div class="confirm-actions">
+      <button class="btn" id="confirm-cancel" style="color:var(--muted)">Annulla</button>
+      <button class="btn" id="confirm-ok" style="background:var(--red);color:#000;border-color:var(--red);font-weight:700">Conferma Reset</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -887,6 +935,41 @@ async function loadAll() {
   btn.classList.remove("loading");
   btn.textContent = "↺ Refresh";
 }
+
+// Reset Dashboard
+document.getElementById("btn-resetdash").addEventListener("click", () => {
+  document.getElementById("confirm-overlay").classList.add("show");
+});
+document.getElementById("confirm-cancel").addEventListener("click", () => {
+  document.getElementById("confirm-overlay").classList.remove("show");
+});
+document.getElementById("confirm-ok").addEventListener("click", async () => {
+  document.getElementById("confirm-overlay").classList.remove("show");
+  const btn = document.getElementById("btn-resetdash");
+  btn.classList.add("loading");
+  btn.textContent = "⚠ Resetting…";
+  try {
+    const r = await fetch(`${API_BASE}/api/resetdash`, {
+      method: "POST",
+      headers: { "X-API-Key": "123" },
+      cache: "no-store"
+    });
+    const data = await r.json();
+    if (data.ok) {
+      btn.textContent = "✅ Reset OK";
+      btn.style.color = "var(--green)";
+      btn.style.borderColor = "var(--green)";
+      setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; btn.style.color = ""; btn.style.borderColor = ""; }, 3000);
+      await loadAll();
+    } else {
+      btn.textContent = "❌ Errore";
+      setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; }, 3000);
+    }
+  } catch(e) {
+    btn.textContent = "❌ " + e.message;
+    setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; }, 3000);
+  }
+});
 
 // Range buttons
 document.querySelectorAll(".btn[data-range]").forEach(btn => {
