@@ -223,5 +223,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetDashBtn");
   if (resetBtn) resetBtn.addEventListener("click", resetDashboard);
 
+  const debugBtn = document.getElementById('debugBtn');
+  if (debugBtn) debugBtn.addEventListener('click', debugMetrics);
+
   init();
 });
+
+// V11 DEBUG: funzione per ispezionare valori grezzi KV
+async function debugMetrics() {
+  const btn = document.getElementById("debugBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "Loading…"; }
+  try {
+    const res = await fetch(`${WORKER_URL}/metrics/debug`, { headers: authHeaders() });
+    const data = await res.json();
+    const out = document.getElementById("debugOutput");
+    if (out) {
+      out.style.display = "block";
+      out.textContent = JSON.stringify(data, null, 2);
+    }
+  } catch(e) {
+    alert("Debug error: " + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "Debug KV"; }
+  }
+}
