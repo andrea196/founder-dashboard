@@ -1,185 +1,905 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FOUNDER COMMAND CENTER — FULL v4 (WAR ROOM)</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOUNDER COMMAND CENTER — FULL v5 (WAR ROOM)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #242430;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --accent3: #47d4ff;
+    --green: #3ddc84;
+    --red: #ff4757;
+    --yellow: #ffd32a;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-title {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .header-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    flex-wrap: wrap;
+  }
+  .range-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .btn-group { display: flex; gap: 4px; }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  .btn-refresh {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 14px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.15s;
+    margin-left: auto;
+  }
+  .btn-refresh:hover { border-color: var(--accent3); color: var(--accent3); }
+  .btn-refresh.loading { color: var(--yellow); border-color: var(--yellow); }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    padding: 8px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 32px;
+    font-size: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .status-item { display: flex; gap: 6px; align-items: center; }
+  .status-label { color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .status-val { color: var(--text); }
+  #status-indicator { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  #status-indicator.error { background: var(--red); }
+  #status-indicator.loading { background: var(--yellow); animation: pulse 1s infinite; }
+
+  /* ── MAIN GRID ── */
+  .main { padding: 28px 32px; display: flex; flex-direction: column; gap: 28px; }
+
+  /* ── SECTION ── */
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .section-title {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  /* ── TARGET BANNER ── */
+  .target-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .target-item {}
+  .target-item .lbl { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .target-item .val { font-size: 22px; font-weight: 700; color: var(--accent); font-family: var(--sans); }
+  .target-item .val.neutral { color: var(--text); }
+  .target-item .val.miss { color: var(--red); }
+  .target-item .val.hit { color: var(--green); }
+  .target-item .sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* ── METRICS GRID ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 1px;
+  }
+  .metric-card {
+    background: var(--surface);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .metric-card:hover { background: var(--surface2); }
+  .metric-card .lbl {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .metric-card .val {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--sans);
+    color: var(--text);
+    line-height: 1;
+  }
+  .metric-card .val.accent { color: var(--accent); }
+  .metric-card .val.green { color: var(--green); }
+  .metric-card .val.red { color: var(--red); }
+  .metric-card .val.blue { color: var(--accent3); }
+  .metric-card .val.orange { color: var(--accent2); }
+  .metric-card .sub { font-size: 10px; color: var(--muted); }
+
+  /* ── FUNNEL TABLE ── */
+  .funnel-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .funnel-table th {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .funnel-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+  .funnel-table tr:last-child td { border-bottom: none; }
+  .funnel-table tr:hover td { background: var(--surface2); }
+  .tier-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .tier-badge.t1 { border-color: var(--accent); color: var(--accent); }
+  .tier-badge.t2 { border-color: var(--accent3); color: var(--accent3); }
+  .tier-badge.t3 { border-color: var(--accent2); color: var(--accent2); }
+  .tier-badge.feet { border-color: var(--green); color: var(--green); }
+  .conv-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .conv-fill {
+    height: 4px;
+    background: var(--border);
+    flex: 1;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .conv-fill-inner {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  .conv-pct { font-size: 12px; color: var(--accent); font-weight: 600; min-width: 40px; }
+
+  /* ── OBJECTIONS SECTION ── */
+  .obj-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 1px;
+  }
+  .obj-card {
+    background: var(--surface);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .obj-card .type {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .obj-card .count {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: var(--sans);
+    line-height: 1;
+  }
+  .obj-card .bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .obj-card .bar-inner {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent2);
+    transition: width 0.4s ease;
+  }
+  .obj-card.MONEY .count { color: var(--red); }
+  .obj-card.MONEY .bar-inner { background: var(--red); }
+  .obj-card.TRUST .count { color: var(--yellow); }
+  .obj-card.TRUST .bar-inner { background: var(--yellow); }
+  .obj-card.TIME .count { color: var(--accent3); }
+  .obj-card.TIME .bar-inner { background: var(--accent3); }
+  .obj-card.FREE .count { color: var(--muted); }
+  .obj-card.FREE .bar-inner { background: var(--muted); }
+  .obj-card.CONTENT .count { color: var(--accent2); }
+  .obj-card.CONTENT .bar-inner { background: var(--accent2); }
+  .obj-card.VALUE .count { color: var(--green); }
+  .obj-card.VALUE .bar-inner { background: var(--green); }
+  .obj-card.BOT .count { color: #b47eff; }
+  .obj-card.BOT .bar-inner { background: #b47eff; }
+  .obj-card.NO .count { color: var(--red); }
+  .obj-card.NO .bar-inner { background: var(--red); }
+
+  /* ── REENTRY TABLE ── */
+  .reentry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 1px;
+  }
+  .reentry-card {
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+  .reentry-card .lbl { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px; }
+  .reentry-card .val { font-size: 22px; font-weight: 700; font-family: var(--sans); color: var(--accent3); }
+  .reentry-card .sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .footer {
+    padding: 16px 32px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .dash { color: var(--muted); }
+  .skeleton {
+    display: inline-block;
+    width: 60px;
+    height: 14px;
+    background: var(--surface2);
+    border-radius: 2px;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .note { font-size: 10px; color: var(--muted); padding: 8px 0 0; letter-spacing: 0.05em; }
+
+  @media (max-width: 640px) {
+    .header { padding: 14px 16px; }
+    .controls { padding: 10px 16px; }
+    .main { padding: 16px; }
+    .target-banner { grid-template-columns: 1fr 1fr; }
+    .reentry-grid { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div>
-        <div class="title">FOUNDER COMMAND CENTER — v4</div>
-        <div class="subtitle">War Room • Alert-first • Dynamic Range</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title">Founder Command Center</div>
+    <div class="header-sub">War Room • Alert-first • v5</div>
+  </div>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    LIVE
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <span class="range-label">Range</span>
+  <div class="btn-group">
+    <button class="btn active" data-range="1d">1D</button>
+    <button class="btn" data-range="7d">7D</button>
+    <button class="btn" data-range="14d">14D</button>
+    <button class="btn" data-range="30d">30D</button>
+  </div>
+  <button class="btn-refresh" id="btn-refresh">↺ Refresh</button>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-item">
+    <div id="status-indicator"></div>
+    <span class="status-label">Status</span>
+    <span class="status-val" id="s-status">loading…</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Range</span>
+    <span class="status-val" id="s-range">—</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">From</span>
+    <span class="status-val" id="s-from">—</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">To</span>
+    <span class="status-val" id="s-to">—</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Generated</span>
+    <span class="status-val" id="s-gen">—</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- DAILY REVENUE TARGET -->
+  <div class="section">
+    <div class="section-title">Daily Revenue Target</div>
+    <div class="target-banner">
+      <div class="target-item">
+        <div class="lbl">Target EOD</div>
+        <div class="val neutral" id="t-target">—</div>
+        <div class="sub" id="t-target-note">Target opzionale — impostalo in app.js.</div>
       </div>
-
-      <div class="controls">
-        <span class="pill" id="livePill">LIVE</span>
-
-        <label class="selectWrap" for="rangeSelect" aria-label="Range selector">
-          <span class="selectLabel">Range</span>
-          <select id="rangeSelect" class="select">
-            <option value="1d">1D</option>
-            <option value="7d" selected>7D</option>
-            <option value="14d">14D</option>
-            <option value="30d">30D</option>
-          </select>
-        </label>
-
-        <button class="btn" id="refreshBtn" type="button">Refresh</button>
-        <button class="btn btn--danger" id="resetDashBtn" type="button">Reset Dash</button>
-        <button class="btn" id="debugBtn" type="button" style="border-color:rgba(255,200,0,.45);background:rgba(255,200,0,.10)">Debug KV</button>
-        <button class="btn" id="migrateBtn" type="button" style="border-color:rgba(61,130,255,.45);background:rgba(61,130,255,.10)">Migrate KV</button>
+      <div class="target-item">
+        <div class="lbl">Actual Revenue</div>
+        <div class="val" id="t-actual">—</div>
       </div>
-    </header>
-
-    <!-- STATUS BANNER -->
-    <div class="banner" id="statusBanner">
-      <div class="statusLeft">
-        <div class="statusTitle">Status</div>
-        <div class="statusMsg" id="statusMsg">loading…</div>
+      <div class="target-item">
+        <div class="lbl">Updated</div>
+        <div class="val neutral" style="font-size:14px" id="t-updated">—</div>
       </div>
-      <div class="statusRight">
-        <div class="meta">
-          <div class="metaLabel">Range</div>
-          <div class="metaValue" id="metaRange">—</div>
-        </div>
-        <div class="meta">
-          <div class="metaLabel">From</div>
-          <div class="metaValue" id="metaFrom">—</div>
-        </div>
-        <div class="meta">
-          <div class="metaLabel">To</div>
-          <div class="metaValue" id="metaTo">—</div>
-        </div>
-        <div class="meta">
-          <div class="metaLabel">Generated</div>
-          <div class="metaValue mono" id="metaGen">—</div>
-        </div>
+    </div>
+  </div>
+
+  <!-- MONEY & GROWTH -->
+  <div class="section">
+    <div class="section-title">Money &amp; Growth</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="lbl">Revenue (range)</div>
+        <div class="val accent" id="m-revenue-range">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Revenue 7D</div>
+        <div class="val" id="m-revenue-7d">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Revenue 30D</div>
+        <div class="val" id="m-revenue-30d">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">ARPPU (range)</div>
+        <div class="val" id="m-arppu">—</div>
+        <div class="sub">avg revenue per paid user</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPS & SYSTEM SIGNALS -->
+  <div class="section">
+    <div class="section-title">Ops &amp; System Signals</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="lbl">Active users (24h)</div>
+        <div class="val green" id="o-active">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">New users (range)</div>
+        <div class="val" id="o-new">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Paid (range)</div>
+        <div class="val accent" id="o-paid">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Revenue / Active</div>
+        <div class="val" id="o-rev-active">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Messages (range)</div>
+        <div class="val blue" id="o-messages">—</div>
+        <div class="sub">totale messaggi utente</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Groq calls (range)</div>
+        <div class="val" id="o-groq">—</div>
+        <div class="sub">chiamate AI — monit. costi</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Reminders sent</div>
+        <div class="val" id="o-reminders">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Locks set (total)</div>
+        <div class="val red" id="o-locks">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBIEZIONI -->
+  <div class="section">
+    <div class="section-title">Obiezioni — Breakdown</div>
+    <div class="metrics-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom: 1px;">
+      <div class="metric-card">
+        <div class="lbl">Obiezioni totali (range)</div>
+        <div class="val orange" id="obj-total">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Regressioni (range)</div>
+        <div class="val red" id="obj-regression">—</div>
+        <div class="sub">utenti entrati in regression mode</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">Obiezioni / Messaggio</div>
+        <div class="val" id="obj-ratio">—</div>
+        <div class="sub">% messaggi con obiezione</div>
+      </div>
+    </div>
+    <div class="obj-grid" id="obj-by-type">
+      <!-- populated by JS -->
+    </div>
+    <div class="note">Breakdown per tipo — MONEY = prezzo, TRUST = fiducia, TIME = rimanda, FREE = vuole gratis, CONTENT = deluso materiale, VALUE = ROI, BOT = sospetto bot, NO = rifiuto netto.</div>
+  </div>
+
+  <!-- FUNNEL BY TIER -->
+  <div class="section">
+    <div class="section-title">Funnel by Tier (range)</div>
+    <table class="funnel-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Link Inviati</th>
+          <th>Pagati</th>
+          <th>Conversion Rate</th>
+          <th>Reminder 1</th>
+          <th>Reminder 2</th>
+          <th>Locks</th>
+        </tr>
+      </thead>
+      <tbody id="funnel-tbody">
+        <tr><td colspan="7" style="color:var(--muted);text-align:center;padding:20px;">Caricamento…</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → "—").</div>
+  </div>
+
+  <!-- REENTRY ANALYTICS -->
+  <div class="section">
+    <div class="section-title">🔁 Reentry Analytics</div>
+    <div class="reentry-grid">
+      <div class="reentry-card">
+        <div class="lbl">Links Sent (total)</div>
+        <div class="val" id="re-links">—</div>
+      </div>
+      <div class="reentry-card">
+        <div class="lbl">Paid (total)</div>
+        <div class="val" id="re-paid">—</div>
+      </div>
+      <div class="reentry-card">
+        <div class="lbl">Revenue (total)</div>
+        <div class="val" id="re-revenue">—</div>
+      </div>
+      <div class="reentry-card">
+        <div class="lbl">Conversion Rate</div>
+        <div class="val" id="re-cvr">—</div>
       </div>
     </div>
 
-    <!-- REVENUE & GROWTH -->
-    <section class="grid2">
-      <div class="card">
-        <div class="cardTitle">DAILY REVENUE TARGET</div>
-        <div class="grid3">
-          <div class="kpi">
-            <div class="kpiLabel">Target EOD</div>
-            <div class="kpiValue" id="targetEOD">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">Actual Revenue</div>
-            <div class="kpiValue" id="actualRevenue">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">Updated</div>
-            <div class="kpiValue mono" id="updatedAt">—</div>
-          </div>
-        </div>
-        <div class="note">Target opzionale — impostalo in app.js.</div>
-      </div>
-
-      <div class="card">
-        <div class="cardTitle">MONEY & GROWTH</div>
-        <div class="grid4">
-          <div class="kpi">
-            <div class="kpiLabel">Revenue (range)</div>
-            <div class="kpiValue" id="revRange">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">Revenue 7D</div>
-            <div class="kpiValue" id="rev7d">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">Revenue 30D</div>
-            <div class="kpiValue" id="rev30d">—</div>
-          </div>
-          <div class="kpi">
-            <div class="kpiLabel">ARPPU (range)</div>
-            <div class="kpiValue" id="arppu">—</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- OPS -->
-    <section class="card">
-      <div class="cardTitle">OPS & SYSTEM SIGNALS</div>
-      <div class="grid6">
-        <div class="kpi">
-          <div class="kpiLabel">Active users (24h)</div>
-          <div class="kpiValue" id="active24h">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">New users (range)</div>
-          <div class="kpiValue" id="newUsersRange">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Paid (range)</div>
-          <div class="kpiValue" id="paidRange">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Revenue / Active</div>
-          <div class="kpiValue" id="revPerActive">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Reminders sent</div>
-          <div class="kpiValue" id="remindersTotal">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiLabel">Locks set (total)</div>
-          <div class="kpiValue" id="locksTotal">—</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FUNNEL BY TIER -->
-    <section class="card">
-      <div class="cardTitle">FUNNEL BY TIER (RANGE)</div>
-      <div class="tierGrid" id="tierGrid"></div>
-      <div class="note">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → "—").</div>
-    </section>
-
-    <!-- REENTRY — card nuova v4 -->
-    <section class="card" id="reentryCard">
-      <div class="cardTitle">🔁 REENTRY ANALYTICS</div>
-      <div class="grid4" style="margin-bottom:14px">
-        <div class="kpi kpi--accent">
-          <div class="kpiLabel">Links Sent (total)</div>
-          <div class="kpiValue" id="reentryLinkSent">—</div>
-        </div>
-        <div class="kpi kpi--accent">
-          <div class="kpiLabel">Paid (total)</div>
-          <div class="kpiValue" id="reentryPaid">—</div>
-        </div>
-        <div class="kpi kpi--accent">
-          <div class="kpiLabel">Revenue (total)</div>
-          <div class="kpiValue" id="reentryRevenue">—</div>
-        </div>
-        <div class="kpi kpi--accent">
-          <div class="kpiLabel">Conversion Rate</div>
-          <div class="kpiValue" id="reentryCVR">—</div>
-        </div>
-      </div>
-      <div class="cardTitle" style="margin-top:4px">BREAKDOWN PER TIER</div>
-      <div class="reentryGrid" id="reentryBreakdown"></div>
-      <div class="note">Reentry = acquisto su piano *_reentry dopo scadenza/drop. Paid solo su webhook Whop confermato.</div>
-    </section>
-
-    <!-- UPGRADES -->
-    <section class="card">
-      <div class="cardTitle">UPGRADES (RANGE)</div>
-      <div class="upGrid" id="upgradesGrid"></div>
-    </section>
-
-    <footer class="footer">
-      <span class="muted">v4 • War Room dashboard • Data source: /api/metrics • worker v150</span>
-    </footer>
+    <table class="funnel-table" style="margin-top:12px;">
+      <thead>
+        <tr>
+          <th>Piano Reentry</th>
+          <th>Links Sent</th>
+          <th>Paid</th>
+          <th>Revenue</th>
+          <th>CVR</th>
+        </tr>
+      </thead>
+      <tbody id="reentry-tbody">
+        <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px;">Caricamento…</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Reentry = acquisto su piano *_reentry dopo scadenza/drop. Paid solo su webhook Whop confermato.</div>
   </div>
 
-  <script src="app.js"></script>
-  <pre id="debugOutput" style="display:none;position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow:auto;background:#0a0a12;color:#3ddc97;font-size:11px;padding:16px;border-top:1px solid rgba(61,220,151,.2);z-index:9999"></pre>
+  <!-- UPGRADES -->
+  <div class="section">
+    <div class="section-title">Upgrades (range)</div>
+    <div class="metrics-grid" id="upgrades-grid">
+      <div class="metric-card">
+        <div class="lbl">T1 → T2</div>
+        <div class="val" id="up-t1t2">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">T2 → T3</div>
+        <div class="val" id="up-t2t3">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">→ Feet1</div>
+        <div class="val green" id="up-feet1">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="lbl">→ Feet2</div>
+        <div class="val green" id="up-feet2">—</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  <span>v5 • War Room dashboard • Data source: /api/metrics</span>
+  <span id="footer-ts">—</span>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────
+const API_BASE = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
+const DAILY_TARGET_EUR = null; // es. 50 → mostra barra
+// ──────────────────────────────────────────────────────────────
+
+let currentRange = "1d";
+let rev7d = 0, rev30d = 0;
+
+function fmt(cents) {
+  if (cents === null || cents === undefined) return "—";
+  return "€" + (cents / 100).toFixed(2);
+}
+function fmtN(n) {
+  if (n === null || n === undefined) return "—";
+  return n.toLocaleString("it-IT");
+}
+function fmtPct(ratio) {
+  if (ratio === null || ratio === undefined) return "—";
+  return (ratio * 100).toFixed(1) + "%";
+}
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setClass(id, cls) {
+  const el = document.getElementById(id);
+  if (el) { el.className = "val " + cls; }
+}
+
+async function fetchRange(range) {
+  const r = await fetch(`${API_BASE}/api/metrics?range=${range}`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+function renderFunnel(data) {
+  const tbody = document.getElementById("funnel-tbody");
+  const tiers = [
+    { key: "t1", label: "T1", cls: "t1" },
+    { key: "t2", label: "T2", cls: "t2" },
+    { key: "t3", label: "T3", cls: "t3" },
+    { key: "feet1", label: "FEET1", cls: "feet" },
+    { key: "feet2", label: "FEET2", cls: "feet" },
+  ];
+  tbody.innerHTML = tiers.map(({ key, label, cls }) => {
+    const t = data.tiers?.[key] || {};
+    const links = t.link_sent_range || 0;
+    const paid  = t.paid_range || 0;
+    const cvr   = links > 0 ? paid / links : null;
+    const pct   = cvr !== null ? Math.min(100, cvr * 100).toFixed(1) : null;
+    const cvrHtml = pct !== null
+      ? `<div class="conv-bar">
+          <div class="conv-fill"><div class="conv-fill-inner" style="width:${pct}%"></div></div>
+          <span class="conv-pct">${pct}%</span>
+        </div>`
+      : '<span class="dash">—</span>';
+    return `<tr>
+      <td><span class="tier-badge ${cls}">${label}</span></td>
+      <td>${fmtN(links)}</td>
+      <td>${fmtN(paid)}</td>
+      <td>${cvrHtml}</td>
+      <td>${fmtN(t.reminder1_sent_range)}</td>
+      <td>${fmtN(t.reminder2_sent_range)}</td>
+      <td>${fmtN(t.lock_set_range)}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderReentry(data) {
+  const re = data.reentry || {};
+  setText("re-links",   fmtN(re.link_sent?.total));
+  setText("re-paid",    fmtN(re.paid?.total));
+  setText("re-revenue", fmt((re.revenue_cents?.total || 0)));
+  setText("re-cvr",     re.cvr?.total != null ? fmtPct(re.cvr.total) : "—");
+
+  const reentryKinds = ["tier1_reentry","tier2_reentry","tier3_reentry","feet1_reentry","feet2_reentry"];
+  const tbody = document.getElementById("reentry-tbody");
+  const rows = reentryKinds.map(k => {
+    const links = re.link_sent?.[k] || 0;
+    const paid  = re.paid?.[k] || 0;
+    const rev   = re.revenue_cents?.[k] || 0;
+    const cvr   = re.cvr?.[k];
+    return `<tr>
+      <td>${k}</td>
+      <td>${fmtN(links)}</td>
+      <td>${fmtN(paid)}</td>
+      <td>${fmt(rev)}</td>
+      <td>${cvr != null ? fmtPct(cvr) : "—"}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = rows.join("") || `<tr><td colspan="5" style="color:var(--muted);text-align:center;padding:16px;">Nessun dato</td></tr>`;
+}
+
+function renderObjections(data) {
+  const obj = data.objections || {};
+  const total = obj.total_range || 0;
+  const reg   = obj.regression_count_range || 0;
+  const msgs  = data.ops?.messages_total_range || 0;
+
+  setText("obj-total",      fmtN(total));
+  setText("obj-regression", fmtN(reg));
+  setText("obj-ratio",      msgs > 0 ? fmtPct(total / msgs) : "—");
+
+  const types = ["MONEY","TRUST","TIME","FREE","CONTENT","VALUE","BOT","NO"];
+  const byType = obj.by_type || {};
+  const maxVal  = Math.max(1, ...types.map(t => byType[t] || 0));
+
+  const container = document.getElementById("obj-by-type");
+  container.innerHTML = types.map(type => {
+    const count = byType[type] || 0;
+    const barW  = Math.round((count / maxVal) * 100);
+    return `<div class="obj-card ${type}">
+      <div class="type">${type}</div>
+      <div class="count">${fmtN(count)}</div>
+      <div class="bar"><div class="bar-inner" style="width:${barW}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function renderTarget(revCents) {
+  setText("t-actual", fmt(revCents));
+  const el = document.getElementById("t-actual");
+  if (el) el.className = "val " + (revCents > 0 ? "accent" : "neutral");
+
+  if (DAILY_TARGET_EUR) {
+    const targetCents = DAILY_TARGET_EUR * 100;
+    setText("t-target", fmt(targetCents));
+    const tEl = document.getElementById("t-target");
+    if (tEl) tEl.className = "val " + (revCents >= targetCents ? "hit" : "miss");
+  } else {
+    setText("t-target", "—");
+    setText("t-target-note", "Target opzionale — impostalo in app.js.");
+  }
+  setText("t-updated", new Date().toLocaleTimeString("it-IT"));
+}
+
+async function loadAll() {
+  const btn = document.getElementById("btn-refresh");
+  const ind = document.getElementById("status-indicator");
+  btn.classList.add("loading");
+  btn.textContent = "↺ Loading…";
+  ind.className = "loading";
+  setText("s-status", "fetching…");
+
+  try {
+    // Fetch range selezionato
+    const d = await fetchRange(currentRange);
+
+    // Status bar
+    ind.className = "";
+    setText("s-status", "OK");
+    setText("s-range", d.range || "—");
+    setText("s-from",  d.period?.from || "—");
+    setText("s-to",    d.period?.to   || "—");
+    const genTime = d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—";
+    setText("s-gen", genTime);
+    setText("footer-ts", "last update: " + genTime);
+
+    // Fetch 7d e 30d per revenue KPI
+    const p = [];
+    if (currentRange !== "7d")  p.push(fetchRange("7d").catch(() => null));
+    else                        p.push(Promise.resolve(d));
+    if (currentRange !== "30d") p.push(fetchRange("30d").catch(() => null));
+    else                        p.push(Promise.resolve(d));
+    const [d7, d30] = await Promise.all(p);
+    rev7d  = d7?.kpi?.revenue_range_cents  || 0;
+    rev30d = d30?.kpi?.revenue_range_cents || 0;
+
+    // Money & Growth
+    const revRange  = d.kpi?.revenue_range_cents || 0;
+    const totalPaid = d.kpi?.total_paid_range || 0;
+    const arppu     = d.kpi?.arppu_range_cents || 0;
+    setText("m-revenue-range", fmt(revRange));
+    setText("m-revenue-7d",    fmt(rev7d));
+    setText("m-revenue-30d",   fmt(rev30d));
+    setText("m-arppu",         arppu > 0 ? fmt(arppu) : "—");
+
+    // OPS
+    const ops = d.ops || {};
+    const active    = ops.active_users_24h   || 0;
+    const newUsers  = ops.new_users_range    || 0;
+    const messages  = ops.messages_total_range || 0;
+    const groqCalls = ops.groq_calls_range   || 0;
+    const levers    = d.levers || {};
+    const reminders = levers.reminder_sent_total || 0;
+    const locks     = levers.locks_set_total     || 0;
+    const revActive = active > 0 ? (revRange / active / 100).toFixed(2) : null;
+
+    setText("o-active",    fmtN(active));
+    setText("o-new",       fmtN(newUsers));
+    setText("o-paid",      fmtN(totalPaid));
+    setText("o-rev-active", revActive ? "€" + revActive : "—");
+    setText("o-messages",  fmtN(messages));
+    setText("o-groq",      fmtN(groqCalls));
+    setText("o-reminders", fmtN(reminders));
+    setText("o-locks",     fmtN(locks));
+
+    // Target (1D revenue)
+    if (currentRange === "1d") {
+      renderTarget(revRange);
+    } else {
+      const d1 = await fetchRange("1d").catch(() => null);
+      renderTarget(d1?.kpi?.revenue_range_cents || 0);
+    }
+
+    // Obiezioni
+    renderObjections(d);
+
+    // Funnel
+    renderFunnel(d);
+
+    // Reentry
+    renderReentry(d);
+
+    // Upgrades
+    const up = d.upgrades || {};
+    setText("up-t1t2",  fmtN(up.t1_to_t2));
+    setText("up-t2t3",  fmtN(up.t2_to_t3));
+    setText("up-feet1", fmtN(up.to_feet1));
+    setText("up-feet2", fmtN(up.to_feet2));
+
+  } catch (err) {
+    ind.className = "error";
+    setText("s-status", "ERROR: " + err.message);
+    console.error(err);
+  }
+
+  btn.classList.remove("loading");
+  btn.textContent = "↺ Refresh";
+}
+
+// Range buttons
+document.querySelectorAll(".btn[data-range]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".btn[data-range]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentRange = btn.dataset.range;
+    loadAll();
+  });
+});
+document.getElementById("btn-refresh").addEventListener("click", loadAll);
+
+// Auto-refresh ogni 60s
+setInterval(loadAll, 60000);
+
+// Initial load
+loadAll();
+</script>
 </body>
 </html>
