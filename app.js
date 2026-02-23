@@ -1,4 +1,4 @@
-// Dashboard App v11 — fix reset bloccato (race condition loading) + paytier fix
+// Dashboard App v12 — V150: aggiunta migrazione bare keys → date-prefixed keys
 
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
 const DASH_TOKEN = "123";
@@ -226,6 +226,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const debugBtn = document.getElementById('debugBtn');
   if (debugBtn) debugBtn.addEventListener('click', debugMetrics);
 
+  const migrateBtn = document.getElementById('migrateBtn');
+  if (migrateBtn) migrateBtn.addEventListener('click', migrateMetrics);
+
   init();
 });
 
@@ -245,5 +248,40 @@ async function debugMetrics() {
     alert("Debug error: " + e.message);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = "Debug KV"; }
+  }
+}
+
+// V12 MIGRATE: copia bare keys → m:DATE:key per oggi (Rome TZ)
+// Risolve il caso in cui dati siano stati scritti senza prefisso data
+async function migrateMetrics() {
+  const btn = document.getElementById("migrateBtn");
+  if (!btn) return;
+  if (!confirm("Migrare le bare keys KV alla data odierna (Rome TZ)?\n\nQuesta operazione è IDEMPOTENTE e sicura: incrementa le date-prefixed keys e azzera le bare keys.\n\nFai questa operazione UNA SOLA VOLTA per evitare doppio conteggio.")) return;
+
+  btn.disabled = true; btn.textContent = "Migrating…";
+  setStatus("⏳ Migrazione bare keys in corso…");
+  try {
+    const res = await fetch(`${WORKER_URL}/metrics/migrate`, {
+      method: "POST",
+      headers: authHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setStatus(`❌ Migrate fallito (${res.status}): ${JSON.stringify(data)}`);
+      return;
+    }
+    setStatus(`✅ Migrate OK — ${data.migrated_count} chiavi migrate su ${data.target_date}. Ricarico…`);
+    const out = document.getElementById("debugOutput");
+    if (out) {
+      out.style.display = "block";
+      out.textContent = JSON.stringify(data, null, 2);
+    }
+    await new Promise(r => setTimeout(r, 1500));
+    cache = {};
+    await init();
+  } catch(e) {
+    setStatus(`❌ Migrate errore: ${e.message}`);
+  } finally {
+    btn.disabled = false; btn.textContent = "Migrate KV";
   }
 }
