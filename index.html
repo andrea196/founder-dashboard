@@ -824,6 +824,20 @@ function renderObjections(data) {
   }).join("");
 }
 
+function renderTip(data) {
+  const tip = data.tip || {};
+  const count = tip.count_range || 0;
+  const revCents = tip.revenue_cents_range || 0;
+  const avg = tip.avg_tip_cents || 0;
+  const totalRev = data.kpi?.revenue_range_cents || 0;
+  const pct = totalRev > 0 ? revCents / totalRev : 0;
+
+  setText("tip-count",   fmtN(count));
+  setText("tip-revenue", fmt(revCents));
+  setText("tip-avg",     count > 0 ? fmt(avg) : "—");
+  setText("tip-pct",     totalRev > 0 ? fmtPct(pct) : "—");
+}
+
 function renderTarget(revCents) {
   setText("t-actual", fmt(revCents));
   const el = document.getElementById("t-actual");
@@ -915,6 +929,9 @@ async function loadAll() {
 
     // Funnel
     renderFunnel(d);
+
+    // Tip
+    renderTip(d);
 
     // Reentry
     renderReentry(d);
