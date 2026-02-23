@@ -1,6 +1,7 @@
 // Dashboard App v8 — ID allineati all'index.html reale
 
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
+const TOK = "123";
 const DASH_TOKEN = "123";
 
 function authHeaders() {
@@ -15,7 +16,8 @@ let loading = false;
 // ─── FETCH ────────────────────────────────────────────────────────────────────
 async function fetchMetrics(range) {
   try {
-    const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, { headers: authHeaders() });
+    // Usa query param per evitare CORS preflight (no custom headers = simple request)
+    const res = await fetch(`${WORKER_URL}/metrics?range=${range}&tok=${TOK}`);
     if (!res.ok) { console.warn(`metrics ${range} → ${res.status}`); return null; }
     return await res.json();
   } catch(e) { console.warn(`metrics ${range} error:`, e.message); return null; }
