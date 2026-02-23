@@ -1,4 +1,4 @@
-// Dashboard App v12 — V150: aggiunta migrazione bare keys → date-prefixed keys
+// Dashboard App v12 -- V150: aggiunta migrazione bare keys -> date-prefixed keys
 
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
 const DASH_TOKEN = "123";
@@ -15,15 +15,15 @@ let loading = false;
 async function fetchMetrics(range) {
   try {
     const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, { headers: authHeaders() });
-    if (!res.ok) { console.warn(`metrics ${range} → ${res.status}`); return null; }
+    if (!res.ok) { console.warn(`metrics ${range} -> ${res.status}`); return null; }
     return await res.json();
   } catch(e) { console.warn(`metrics ${range} error:`, e.message); return null; }
 }
 
 async function init() {
-  // V11 FIX: non usare il guard "if (loading) return" — gestisci loading internamente
+  // V11 FIX: non usare il guard "if (loading) return" -- gestisci loading internamente
   loading = true;
-  setStatus("loading…");
+  setStatus("loading...");
   setLivePill(false);
 
   try {
@@ -33,24 +33,24 @@ async function init() {
     cache = { "1d": d1, "7d": d7, "14d": d14, "30d": d30 };
 
     if (!d1 && !d7 && !d14 && !d30) {
-      setStatus("❌ Nessun dato — worker non raggiungibile o token errato");
+      setStatus("[ERRORE] Nessun dato -- worker non raggiungibile o token errato");
       setLivePill(false);
     } else {
       setLivePill(true);
       render();
     }
   } catch(e) {
-    setStatus("❌ Errore fetch: " + e.message);
+    setStatus("[ERRORE] Errore fetch: " + e.message);
   } finally {
-    // V11 FIX: loading = false sempre nel finally — garantito anche su errore
+    // V11 FIX: loading = false sempre nel finally -- garantito anche su errore
     loading = false;
   }
 }
 
 async function resetDashboard() {
   const btn = document.getElementById("resetDashBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "Resetting…"; }
-  setStatus("⏳ Reset in corso…");
+  if (btn) { btn.disabled = true; btn.textContent = "Resetting..."; }
+  setStatus("Resetting...");
 
   try {
     const res = await fetch(`${WORKER_URL}/metrics/reset`, {
@@ -59,13 +59,13 @@ async function resetDashboard() {
     });
     if (!res.ok) {
       const err = await res.text();
-      setStatus(`❌ Reset fallito (${res.status}): ${err}`);
+      setStatus(`[ERRORE] Reset fallito (${res.status}): ${err}`);
       return;
     }
     const data = await res.json();
-    setStatus(`✅ Reset OK — ${data.cleared} chiavi. Ricarico tra 1.5s…`);
+    setStatus(`[OK] Reset OK -- ${data.cleared} chiavi. Ricarico tra 1.5s...`);
   } catch(e) {
-    setStatus(`❌ Reset errore: ${e.message}`);
+    setStatus(`[ERRORE] Reset errore: ${e.message}`);
     return;
   } finally {
     // V11 FIX: riabilita bottone sempre, anche su errore
@@ -82,14 +82,14 @@ function render() {
   const d   = cache[currentRange];
   const d7  = cache["7d"];
   const d30 = cache["30d"];
-  if (!d) { setStatus("⚠️ Dati non disponibili per questo range"); return; }
+  if (!d) { setStatus("[WARN] Dati non disponibili per questo range"); return; }
 
   const p = d.period || {};
-  setStatus("✅ OK");
+  setStatus("OK");
   setText("metaRange",  d.range || currentRange);
-  setText("metaFrom",   p.from || "—");
-  setText("metaTo",     p.to   || "—");
-  setText("metaGen",    d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—");
+  setText("metaFrom",   p.from || "--");
+  setText("metaTo",     p.to   || "--");
+  setText("metaGen",    d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "--");
 
   const k = d.kpi || {};
   setText("revRange",   eur(k.revenue_range_cents));
@@ -97,8 +97,8 @@ function render() {
   setText("rev30d",     eur(d30?.kpi?.revenue_range_cents));
   setText("arppu",      eur(k.arppu_range_cents));
   setText("actualRevenue", eur(k.revenue_range_cents));
-  setText("updatedAt",  d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—");
-  setText("targetEOD",  DAILY_TARGET_CENTS != null ? eur(DAILY_TARGET_CENTS) : "—");
+  setText("updatedAt",  d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "--");
+  setText("targetEOD",  DAILY_TARGET_CENTS != null ? eur(DAILY_TARGET_CENTS) : "--");
 
   const ops = d.ops || {};
   const levers = d.levers || {};
@@ -109,7 +109,7 @@ function render() {
   setText("locksTotal",    num(levers.locks_set_total));
 
   const revPerActive = (ops.active_users_24h > 0 && k.revenue_range_cents > 0)
-    ? eur(Math.round(k.revenue_range_cents / ops.active_users_24h)) : "—";
+    ? eur(Math.round(k.revenue_range_cents / ops.active_users_24h)) : "--";
   setText("revPerActive", revPerActive);
 
   renderTiers(d.tiers || {});
@@ -128,7 +128,7 @@ function renderTiers(tiers) {
   for (const { key, label } of TIERS) {
     const t = tiers[key] || {};
     const cr = (t.link_sent_range > 0 && t.paid_range > 0)
-      ? pct(t.paid_range / t.link_sent_range) : "—";
+      ? pct(t.paid_range / t.link_sent_range) : "--";
     const card = document.createElement("div");
     card.className = "tierCard";
     card.innerHTML = `
@@ -150,7 +150,7 @@ function renderReentry(re) {
   setText("reentryLinkSent", num(re.link_sent?.total));
   setText("reentryPaid",     num(re.paid?.total));
   setText("reentryRevenue",  eur(re.revenue_cents?.total));
-  setText("reentryCVR", re.cvr?.total != null ? pct(re.cvr.total) : "—");
+  setText("reentryCVR", re.cvr?.total != null ? pct(re.cvr.total) : "--");
 
   const grid = document.getElementById("reentryBreakdown");
   if (!grid) return;
@@ -173,7 +173,7 @@ function renderReentry(re) {
         <div class="reentryRow"><span class="reentryRowLabel">Sent</span><span class="reentryRowVal">${num(sent)}</span></div>
         <div class="reentryRow"><span class="reentryRowLabel">Paid</span><span class="reentryRowVal">${num(paid)}</span></div>
         <div class="reentryRow"><span class="reentryRowLabel">Rev</span><span class="reentryRowVal">${eur(rev)}</span></div>
-        <div class="reentryRow"><span class="reentryRowLabel">CVR</span><span class="reentryRowVal">${cvr != null ? pct(cvr) : "—"}</span></div>
+        <div class="reentryRow"><span class="reentryRowLabel">CVR</span><span class="reentryRowVal">${cvr != null ? pct(cvr) : "--"}</span></div>
       </div>`;
     grid.appendChild(box);
   }
@@ -183,8 +183,8 @@ function renderUpgrades(u) {
   const grid = document.getElementById("upgradesGrid");
   if (!grid) return;
   grid.innerHTML = [
-    { label:"T1→T2", val: u.t1_to_t2 }, { label:"T2→T3", val: u.t2_to_t3 },
-    { label:"→FEET1", val: u.to_feet1 }, { label:"→FEET2", val: u.to_feet2 },
+    { label:"T1->T2", val: u.t1_to_t2 }, { label:"T2->T3", val: u.t2_to_t3 },
+    { label:"->FEET1", val: u.to_feet1 }, { label:"->FEET2", val: u.to_feet2 },
   ].map(({ label, val }) => `
     <div class="upBox"><div class="upKey">${label}</div><div class="upVal">${num(val)}</div></div>
   `).join("");
@@ -192,7 +192,7 @@ function renderUpgrades(u) {
 
 function setText(id, v) {
   const el = document.getElementById(id);
-  if (el) el.textContent = (v === null || v === undefined) ? "—" : v;
+  if (el) el.textContent = (v === null || v === undefined) ? "--" : v;
 }
 function setStatus(msg) { setText("statusMsg", msg); }
 function setLivePill(live) {
@@ -202,9 +202,9 @@ function setLivePill(live) {
   pill.style.setProperty("--pill-color", live ? "var(--good)" : "#ff5f57");
   pill.style.setProperty("--pill-glow",  live ? "rgba(61,220,151,.14)" : "rgba(255,95,87,.14)");
 }
-function eur(n) { return (n == null) ? "—" : "€" + (n / 100).toFixed(2); }
-function num(n) { return (n == null) ? "—" : Number(n).toLocaleString("it-IT"); }
-function pct(n) { return (n == null) ? "—" : (n * 100).toFixed(1) + "%"; }
+function eur(n) { return (n == null) ? "--" : "€" + (n / 100).toFixed(2); }
+function num(n) { return (n == null) ? "--" : Number(n).toLocaleString("it-IT"); }
+function pct(n) { return (n == null) ? "--" : (n * 100).toFixed(1) + "%"; }
 
 document.addEventListener("DOMContentLoaded", () => {
   const sel = document.getElementById("rangeSelect");
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // V11 DEBUG: funzione per ispezionare valori grezzi KV
 async function debugMetrics() {
   const btn = document.getElementById("debugBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "Loading…"; }
+  if (btn) { btn.disabled = true; btn.textContent = "Loading..."; }
   try {
     const res = await fetch(`${WORKER_URL}/metrics/debug`, { headers: authHeaders() });
     const data = await res.json();
@@ -251,15 +251,15 @@ async function debugMetrics() {
   }
 }
 
-// V12 MIGRATE: copia bare keys → m:DATE:key per oggi (Rome TZ)
+// V12 MIGRATE: copia bare keys -> m:DATE:key per oggi (Rome TZ)
 // Risolve il caso in cui dati siano stati scritti senza prefisso data
 async function migrateMetrics() {
   const btn = document.getElementById("migrateBtn");
   if (!btn) return;
-  if (!confirm("Migrare le bare keys KV alla data odierna (Rome TZ)?\n\nQuesta operazione è IDEMPOTENTE e sicura: incrementa le date-prefixed keys e azzera le bare keys.\n\nFai questa operazione UNA SOLA VOLTA per evitare doppio conteggio.")) return;
+  if (!confirm("Migrare le bare keys KV alla data odierna (Rome TZ)?\n\nQuesta operazione e IDEMPOTENTE e sicura: incrementa le date-prefixed keys e azzera le bare keys.\n\nFai questa operazione UNA SOLA VOLTA per evitare doppio conteggio.")) return;
 
-  btn.disabled = true; btn.textContent = "Migrating…";
-  setStatus("⏳ Migrazione bare keys in corso…");
+  btn.disabled = true; btn.textContent = "Migrating...";
+  setStatus("Migrazione bare keys in corso...");
   try {
     const res = await fetch(`${WORKER_URL}/metrics/migrate`, {
       method: "POST",
@@ -267,10 +267,10 @@ async function migrateMetrics() {
     });
     const data = await res.json();
     if (!res.ok) {
-      setStatus(`❌ Migrate fallito (${res.status}): ${JSON.stringify(data)}`);
+      setStatus(`[ERRORE] Migrate fallito (${res.status}): ${JSON.stringify(data)}`);
       return;
     }
-    setStatus(`✅ Migrate OK — ${data.migrated_count} chiavi migrate su ${data.target_date}. Ricarico…`);
+    setStatus(`[OK] Migrate OK -- ${data.migrated_count} chiavi migrate su ${data.target_date}. Ricarico...`);
     const out = document.getElementById("debugOutput");
     if (out) {
       out.style.display = "block";
@@ -280,7 +280,7 @@ async function migrateMetrics() {
     cache = {};
     await init();
   } catch(e) {
-    setStatus(`❌ Migrate errore: ${e.message}`);
+    setStatus(`[ERRORE] Migrate errore: ${e.message}`);
   } finally {
     btn.disabled = false; btn.textContent = "Migrate KV";
   }
