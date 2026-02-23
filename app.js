@@ -1,8 +1,7 @@
-// Dashboard App v10 — Reset directo via /metrics/reset + auto-refresh post-reset
+// Dashboard App v11 — fix reset bloccato (race condition loading) + paytier fix
 
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
 const DASH_TOKEN = "123";
-
 const DAILY_TARGET_CENTS = null;
 
 function authHeaders() {
@@ -22,28 +21,32 @@ async function fetchMetrics(range) {
 }
 
 async function init() {
-  if (loading) return;
+  // V11 FIX: non usare il guard "if (loading) return" — gestisci loading internamente
   loading = true;
   setStatus("loading…");
   setLivePill(false);
 
-  const [d1, d7, d14, d30] = await Promise.all([
-    fetchMetrics("1d"), fetchMetrics("7d"), fetchMetrics("14d"), fetchMetrics("30d"),
-  ]);
+  try {
+    const [d1, d7, d14, d30] = await Promise.all([
+      fetchMetrics("1d"), fetchMetrics("7d"), fetchMetrics("14d"), fetchMetrics("30d"),
+    ]);
+    cache = { "1d": d1, "7d": d7, "14d": d14, "30d": d30 };
 
-  cache = { "1d": d1, "7d": d7, "14d": d14, "30d": d30 };
-  loading = false;
-
-  if (!d1 && !d7 && !d14 && !d30) {
-    setStatus("❌ Nessun dato — worker non raggiungibile o token errato");
-    setLivePill(false);
-    return;
+    if (!d1 && !d7 && !d14 && !d30) {
+      setStatus("❌ Nessun dato — worker non raggiungibile o token errato");
+      setLivePill(false);
+    } else {
+      setLivePill(true);
+      render();
+    }
+  } catch(e) {
+    setStatus("❌ Errore fetch: " + e.message);
+  } finally {
+    // V11 FIX: loading = false sempre nel finally — garantito anche su errore
+    loading = false;
   }
-  setLivePill(true);
-  render();
 }
 
-// Reset diretto via HTTP — niente Messenger, niente cache stale
 async function resetDashboard() {
   const btn = document.getElementById("resetDashBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Resetting…"; }
@@ -57,22 +60,21 @@ async function resetDashboard() {
     if (!res.ok) {
       const err = await res.text();
       setStatus(`❌ Reset fallito (${res.status}): ${err}`);
-      if (btn) { btn.disabled = false; btn.textContent = "Reset Dash"; }
       return;
     }
     const data = await res.json();
-    setStatus(`✅ Reset OK — ${data.cleared} chiavi azzerate. Ricarico tra 1.5s…`);
+    setStatus(`✅ Reset OK — ${data.cleared} chiavi. Ricarico tra 1.5s…`);
   } catch(e) {
     setStatus(`❌ Reset errore: ${e.message}`);
-    if (btn) { btn.disabled = false; btn.textContent = "Reset Dash"; }
     return;
+  } finally {
+    // V11 FIX: riabilita bottone sempre, anche su errore
+    if (btn) { btn.disabled = false; btn.textContent = "Reset Dash"; }
   }
 
-  // 1.5s per KV eventual consistency, poi rifetcha fresh
+  // 1.5s per KV consistency, poi rifetcha (init() gestisce loading internamente)
   await new Promise(r => setTimeout(r, 1500));
   cache = {};
-  loading = false;
-  if (btn) { btn.disabled = false; btn.textContent = "Reset Dash"; }
   await init();
 }
 
@@ -214,8 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
       else init();
     });
   }
+
   const btn = document.getElementById("refreshBtn");
-  if (btn) btn.addEventListener("click", () => { loading = false; cache = {}; init(); });
+  if (btn) btn.addEventListener("click", () => { cache = {}; init(); });
 
   const resetBtn = document.getElementById("resetDashBtn");
   if (resetBtn) resetBtn.addEventListener("click", resetDashboard);
