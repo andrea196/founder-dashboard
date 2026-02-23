@@ -145,7 +145,7 @@
     transition: all 0.15s;
   }
   .btn-resetdash:hover { border-color: var(--red); color: var(--red); }
-  .btn-resetdash.loading { color: var(--yellow); border-color: var(--yellow); animation: pulse 0.8s infinite; }
+  .btn-resetdash.loading { color: var(--yellow); border-color: var(--yellow); }
   .confirm-overlay {
     display: none;
     position: fixed;
@@ -946,10 +946,22 @@ document.getElementById("confirm-cancel").addEventListener("click", () => {
 document.getElementById("confirm-ok").addEventListener("click", async () => {
   document.getElementById("confirm-overlay").classList.remove("show");
   const btn = document.getElementById("btn-resetdash");
+  let _blinkInterval = null;
 
+  function startBlink() {
+    let on = true;
+    _blinkInterval = setInterval(() => {
+      btn.style.opacity = on ? "1" : "0.3";
+      on = !on;
+    }, 400);
+  }
+  function stopBlink() {
+    if (_blinkInterval) { clearInterval(_blinkInterval); _blinkInterval = null; }
+    btn.style.opacity = "1";
+  }
   function resetBtn(text, color) {
+    stopBlink();
     btn.classList.remove("loading");
-    btn.style.animation = "none"; // stop pulse definitivamente
     btn.textContent = text;
     btn.style.color = color || "";
     btn.style.borderColor = color || "";
@@ -957,6 +969,8 @@ document.getElementById("confirm-ok").addEventListener("click", async () => {
 
   btn.classList.add("loading");
   btn.textContent = "⚠ Resetting…";
+  startBlink();
+
   try {
     const r = await fetch(`${API_BASE}/api/resetdash`, {
       method: "POST",
