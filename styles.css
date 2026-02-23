@@ -135,3 +135,10 @@ body{
   .upGrid{grid-template-columns:repeat(2,1fr)}
   .reentryGrid{grid-template-columns:repeat(2,1fr)}
 }
+
+.btn--danger{
+  border-color:rgba(255,95,87,.45);
+  background:rgba(255,95,87,.12);
+}
+.btn--danger:hover{background:rgba(255,95,87,.22)}
+.btn--danger:disabled{opacity:.45;cursor:not-allowed}
