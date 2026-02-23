@@ -1,8 +1,11 @@
-// Dashboard App v8 — ID allineati all'index.html reale
+// Dashboard App v9 — fix: 14d range, targetEOD, status pill, tier grid
 
 const WORKER_URL = "https://cold-sun-7c50luna.andreagalletti.workers.dev";
-const TOK = "123";
 const DASH_TOKEN = "123";
+
+// ── OPZIONALE: target giornaliero revenue in centesimi ──
+// Imposta a null per nasconderlo, oppure es. 50000 = €500
+const DAILY_TARGET_CENTS = null;
 
 function authHeaders() {
   return { "X-DASH-TOKEN": DASH_TOKEN, "X-API-Key": DASH_TOKEN };
@@ -16,8 +19,7 @@ let loading = false;
 // ─── FETCH ────────────────────────────────────────────────────────────────────
 async function fetchMetrics(range) {
   try {
-    // Usa query param per evitare CORS preflight (no custom headers = simple request)
-    const res = await fetch(`${WORKER_URL}/metrics?range=${range}&tok=${TOK}`);
+    const res = await fetch(`${WORKER_URL}/metrics?range=${range}`, { headers: authHeaders() });
     if (!res.ok) { console.warn(`metrics ${range} → ${res.status}`); return null; }
     return await res.json();
   } catch(e) { console.warn(`metrics ${range} error:`, e.message); return null; }
@@ -28,19 +30,26 @@ async function init() {
   if (loading) return;
   loading = true;
   setStatus("loading…");
+  setLivePill(false);
 
-  const [d1, d7, d30] = await Promise.all([
-    fetchMetrics("1d"), fetchMetrics("7d"), fetchMetrics("30d")
+  // FIX v9: fetch tutti e 4 i range disponibili nel select (aggiunto 14d)
+  const [d1, d7, d14, d30] = await Promise.all([
+    fetchMetrics("1d"),
+    fetchMetrics("7d"),
+    fetchMetrics("14d"),
+    fetchMetrics("30d"),
   ]);
 
-  cache = { "1d": d1, "7d": d7, "30d": d30 };
+  cache = { "1d": d1, "7d": d7, "14d": d14, "30d": d30 };
   loading = false;
 
-  if (!d1 && !d7 && !d30) {
+  if (!d1 && !d7 && !d14 && !d30) {
     setStatus("❌ Nessun dato — worker non raggiungibile o token errato");
+    setLivePill(false);
     return;
   }
 
+  setLivePill(true);
   render();
 }
 
@@ -67,6 +76,13 @@ function render() {
   setText("arppu",      eur(k.arppu_range_cents));
   setText("actualRevenue", eur(k.revenue_range_cents));
   setText("updatedAt",  d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "—");
+
+  // FIX v9: targetEOD — era sempre "—" perché mai popolato
+  if (DAILY_TARGET_CENTS != null) {
+    setText("targetEOD", eur(DAILY_TARGET_CENTS));
+  } else {
+    setText("targetEOD", "—");
+  }
 
   // OPS
   const ops = d.ops || {};
@@ -191,6 +207,22 @@ function setText(id, v) {
   if (el) el.textContent = (v === null || v === undefined) ? "—" : v;
 }
 function setStatus(msg) { setText("statusMsg", msg); }
+
+// FIX v9: livePill riflette lo stato reale della connessione
+function setLivePill(live) {
+  const pill = document.getElementById("livePill");
+  if (!pill) return;
+  if (live) {
+    pill.textContent = "LIVE";
+    pill.style.setProperty("--pill-color", "var(--good)");
+    pill.style.setProperty("--pill-glow", "rgba(61,220,151,.14)");
+  } else {
+    pill.textContent = "OFFLINE";
+    pill.style.setProperty("--pill-color", "#ff5f57");
+    pill.style.setProperty("--pill-glow", "rgba(255,95,87,.14)");
+  }
+}
+
 function eur(n) { return (n == null) ? "—" : "€" + (n / 100).toFixed(2); }
 function num(n) { return (n == null) ? "—" : Number(n).toLocaleString("it-IT"); }
 function pct(n) { return (n == null) ? "—" : (n * 100).toFixed(1) + "%"; }
@@ -202,13 +234,14 @@ document.addEventListener("DOMContentLoaded", () => {
     sel.value = currentRange;
     sel.addEventListener("change", () => {
       currentRange = sel.value;
+      // FIX v9: cache["14d"] ora esiste perché lo fetchiamo in init()
       if (cache[currentRange]) render();
       else init();
     });
   }
 
   const btn = document.getElementById("refreshBtn");
-  if (btn) btn.addEventListener("click", () => { loading = false; init(); });
+  if (btn) btn.addEventListener("click", () => { loading = false; cache = {}; init(); });
 
   init();
 });
