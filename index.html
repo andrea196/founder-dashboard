@@ -946,6 +946,15 @@ document.getElementById("confirm-cancel").addEventListener("click", () => {
 document.getElementById("confirm-ok").addEventListener("click", async () => {
   document.getElementById("confirm-overlay").classList.remove("show");
   const btn = document.getElementById("btn-resetdash");
+
+  function resetBtn(text, color) {
+    btn.classList.remove("loading");
+    btn.style.animation = "none"; // stop pulse definitivamente
+    btn.textContent = text;
+    btn.style.color = color || "";
+    btn.style.borderColor = color || "";
+  }
+
   btn.classList.add("loading");
   btn.textContent = "⚠ Resetting…";
   try {
@@ -956,18 +965,16 @@ document.getElementById("confirm-ok").addEventListener("click", async () => {
     });
     const data = await r.json();
     if (data.ok) {
-      btn.textContent = "✅ Reset OK";
-      btn.style.color = "var(--green)";
-      btn.style.borderColor = "var(--green)";
-      setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; btn.style.color = ""; btn.style.borderColor = ""; }, 3000);
+      resetBtn("✅ Reset OK", "var(--green)");
       await loadAll();
+      setTimeout(() => { resetBtn("⚠ Reset Dash"); }, 3000);
     } else {
-      btn.textContent = "❌ Errore";
-      setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; }, 3000);
+      resetBtn("❌ Errore", "var(--red)");
+      setTimeout(() => { resetBtn("⚠ Reset Dash"); }, 3000);
     }
   } catch(e) {
-    btn.textContent = "❌ " + e.message;
-    setTimeout(() => { btn.classList.remove("loading"); btn.textContent = "⚠ Reset Dash"; }, 3000);
+    resetBtn("❌ " + e.message.substring(0,20), "var(--red)");
+    setTimeout(() => { resetBtn("⚠ Reset Dash"); }, 3000);
   }
 });
 
