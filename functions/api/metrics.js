@@ -2,7 +2,6 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const range = url.searchParams.get("range") || "7d";
-
   const base = (env.WORKER_BASE_URL || "").replace(/\/$/, "");
   if (!base) {
     return new Response(JSON.stringify({ error: "Missing WORKER_BASE_URL" }), {
@@ -10,15 +9,13 @@ export async function onRequestGet(context) {
       headers: cors({ "Content-Type": "application/json" }),
     });
   }
-
   const upstream = `${base}/metrics?range=${encodeURIComponent(range)}`;
-
   const res = await fetch(upstream, {
     headers: {
       "X-DASH-TOKEN": env.DASH_TOKEN || "",
+      "X-API-Key":    env.ADMIN_KEY  || env.DASH_TOKEN || "",
     },
   });
-
   const txt = await res.text();
   return new Response(txt, {
     status: res.status,
@@ -26,11 +23,15 @@ export async function onRequestGet(context) {
   });
 }
 
+export async function onRequestOptions() {
+  return new Response(null, { status: 204, headers: cors() });
+}
+
 function cors(extra = {}) {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-DASH-TOKEN",
+    "Access-Control-Allow-Headers": "Content-Type, X-DASH-TOKEN, X-API-Key",
     ...extra,
   };
 }
