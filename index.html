@@ -458,7 +458,7 @@
 // CONFIG — modifica qui
 // ══════════════════════════════════════════════════════════════
 const WORKER_BASE = "https://gabriafterdark.obsidianmedia.space";
-const DASH_TOKEN  = "";          // lascia vuoto se usi X-API-Key in locale
+const DASH_TOKEN  = "123";          // lascia vuoto se usi X-API-Key in locale
 const DAILY_TARGET_EUR = null;   // es: 150  — null = nasconde target
 
 // ══════════════════════════════════════════════════════════════
@@ -704,7 +704,7 @@ $("btn-confirm").addEventListener("click", async () => {
   try {
     const headers = { "Content-Type": "application/json" };
     if (DASH_TOKEN) headers["X-DASH-TOKEN"] = DASH_TOKEN;
-    const res = await fetch(`${WORKER_BASE}/api/resetdash`, { method: "POST", headers });
+    const res = await fetch(`${WORKER_BASE}/metrics/reset`, { method: "POST", headers });
     if (!res.ok) throw new Error("HTTP " + res.status);
     setVal("status-msg", "✅ Reset completato");
     setTimeout(() => load(currentRange), 1200);
