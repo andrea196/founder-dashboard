@@ -24,59 +24,56 @@
       --wh:      #f1f0ff;
       --gr:      #6b7280;
       --gr2:     #4b5563;
-      --tip:     #f59e0b;
     }
 
     html, body {
-      background: var(--bg);
-      color: var(--wh);
+      background: var(--bg); color: var(--wh);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      font-size: 14px;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      font-size: 14px; min-height: 100vh; -webkit-font-smoothing: antialiased;
     }
 
-    /* ── TOP BAR ── */
+    /* TOP BAR */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       display: flex; align-items: center; gap: 12px;
       padding: 12px 20px;
-      background: rgba(10,10,15,.92);
-      backdrop-filter: blur(12px);
+      background: rgba(10,10,15,.92); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--bd);
     }
-    .topbar-title { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent2); flex: 1; }
+    .topbar-title { font-size: 13px; font-weight: 700; letter-spacing:.08em; text-transform:uppercase; color: var(--accent2); flex: 1; }
     .topbar-sub   { font-size: 10px; color: var(--gr); letter-spacing:.04em; }
     .live-badge   { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing:.1em; text-transform:uppercase; color: var(--green); }
-    .live-dot     { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
-    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .live-dot     { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* ── RANGE + ACTIONS ── */
+    /* CONTROLS */
     .controls {
       display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--bd);
+      padding: 14px 20px; border-bottom: 1px solid var(--bd);
     }
     .range-btn {
       padding: 6px 14px; border-radius: 8px; border: 1px solid var(--bd2);
       background: var(--bg3); color: var(--gr); font-size: 12px; font-weight: 600;
       cursor: pointer; transition: all .15s;
     }
-    .range-btn:hover       { border-color: var(--accent2); color: var(--accent2); }
-    .range-btn.active      { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .range-btn:hover  { border-color: var(--accent2); color: var(--accent2); }
+    .range-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn-action {
-      margin-left: auto; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--bd2);
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--bd2);
       background: var(--bg3); color: var(--wh); font-size: 12px; font-weight: 600;
       cursor: pointer; transition: all .15s;
     }
-    .btn-action:hover { border-color: var(--accent2); }
-    .btn-reset        { color: var(--red); border-color: #7f1d1d; }
-    .btn-reset:hover  { background: #7f1d1d33; }
+    .btn-action:hover   { border-color: var(--accent2); }
+    .btn-reset          { color: var(--red); border-color: #7f1d1d; }
+    .btn-reset:hover    { background: #7f1d1d33; }
+    .btn-export         { color: var(--accent2); border-color: #3b1fa8; }
+    .btn-export:hover   { background: rgba(124,58,237,.15); border-color: var(--accent2); }
+    .btn-export.loading { opacity: .5; pointer-events: none; }
 
-    /* ── MAIN LAYOUT ── */
+    /* MAIN */
     main { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
 
-    /* ── STATUS BAR ── */
+    /* STATUS */
     .statusbar {
       display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
       padding: 12px 16px; border-radius: 10px;
@@ -86,34 +83,21 @@
     .statusbar b { color: var(--wh); }
     #status-msg { color: var(--yellow); font-weight: 600; }
 
-    /* ── SECTION TITLE ── */
+    /* SECTION TITLE */
     .section-title {
       font-size: 11px; font-weight: 700; letter-spacing:.12em; text-transform:uppercase;
       color: var(--gr); margin-bottom: 12px; margin-top: 28px;
     }
-    .section-title:first-child { margin-top: 0; }
 
-    /* ── CARD ── */
+    /* CARD */
     .card {
       background: var(--bg2); border: 1px solid var(--bd);
-      border-radius: 12px; padding: 20px;
-      margin-bottom: 16px;
-    }
-    .card h2 {
-      font-size: 12px; font-weight: 700; letter-spacing:.1em; text-transform:uppercase;
-      color: var(--gr); margin-bottom: 16px;
+      border-radius: 12px; padding: 20px; margin-bottom: 16px;
     }
 
-    /* ── METRICS GRID ── */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
-    }
-    .metric {
-      background: var(--bg3); border: 1px solid var(--bd);
-      border-radius: 8px; padding: 14px 16px;
-    }
+    /* METRICS GRID */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; }
+    .metric { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 14px 16px; }
     .metric-label { font-size: 10px; color: var(--gr); letter-spacing:.04em; margin-bottom: 6px; }
     .metric-value { font-size: 22px; font-weight: 800; color: var(--wh); letter-spacing:-.02em; }
     .metric-value.green  { color: var(--green); }
@@ -121,29 +105,19 @@
     .metric-value.red    { color: var(--red); }
     .metric-sub { font-size: 10px; color: var(--gr2); margin-top: 3px; }
 
-    /* TARGET REVENUE special card */
-    .target-card {
-      background: linear-gradient(135deg, #1a103a, #0f0a24);
-      border-color: #2d1b69;
-    }
+    /* special cards */
+    .target-card { background: linear-gradient(135deg,#1a103a,#0f0a24); border-color: #2d1b69; }
     .target-card .metric-value { color: var(--accent2); }
-
-    /* TIP card */
-    .tip-card { border-color: #44300a; background: linear-gradient(135deg, #1a1200, #111008); }
-    .tip-card h2 { color: var(--gold); }
+    .tip-card { border-color: #44300a; background: linear-gradient(135deg,#1a1200,#111008); }
     .tip-card .metric-value { color: var(--gold); }
     .tip-card .metric { border-color: #44300a; background: rgba(251,191,36,.06); }
     .tip-card .metric-label { color: #a37c20; }
     .tip-card .metric-sub   { color: #6b5010; }
 
-    /* ── TABLE ── */
+    /* TABLE */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    thead th {
-      text-align: left; padding: 8px 12px;
-      font-size: 10px; font-weight: 700; letter-spacing:.08em; text-transform:uppercase;
-      color: var(--gr); border-bottom: 1px solid var(--bd);
-    }
+    thead th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; letter-spacing:.08em; text-transform:uppercase; color: var(--gr); border-bottom: 1px solid var(--bd); }
     tbody td { padding: 10px 12px; border-bottom: 1px solid var(--bd); color: var(--wh); }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover td { background: var(--bg3); }
@@ -151,65 +125,73 @@
     td.pct { text-align: right; color: var(--accent2); font-weight: 700; }
     td.rev { text-align: right; color: var(--green); font-weight: 700; }
 
-    /* ── OBJ BREAKDOWN ── */
+    /* OBJ GRID */
     .obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 8px; }
     .obj-item { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 10px 12px; }
     .obj-type  { font-size: 10px; font-weight: 700; letter-spacing:.06em; text-transform:uppercase; color: var(--yellow); margin-bottom:4px; }
     .obj-count { font-size: 20px; font-weight: 800; color: var(--wh); }
     .obj-desc  { font-size: 9px; color: var(--gr2); margin-top: 2px; }
 
-    /* ── MODAL RESET ── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
-      z-index: 1000; align-items: center; justify-content: center;
-    }
+    /* ANALISI CONVERSAZIONI */
+    .analisi-card { background: var(--bg2); border: 1px solid var(--bd2); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .analisi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; }
+    .am-metric { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 14px 16px; }
+    .am-label  { font-size: 10px; color: var(--gr); letter-spacing:.04em; margin-bottom: 6px; }
+    .am-value  { font-size: 22px; font-weight: 800; color: var(--wh); letter-spacing:-.02em; }
+    .am-value.warn { color: var(--yellow); }
+    .am-value.good { color: var(--green); }
+    .am-sub    { font-size: 10px; color: var(--gr2); margin-top: 3px; }
+    .funnel-bar-wrap { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .funnel-row { display: flex; align-items: center; gap: 10px; }
+    .f-label   { font-size: 10px; color: var(--gr); width: 70px; flex-shrink: 0; text-align: right; }
+    .f-bar-bg  { flex: 1; height: 7px; background: rgba(255,255,255,.07); border-radius: 4px; overflow: hidden; }
+    .f-bar     { height: 100%; border-radius: 4px; transition: width .5s ease; }
+    .f-val     { font-size: 10px; color: var(--gr); width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--bg2); border: 1px solid #7f1d1d;
-      border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;
-    }
+    .modal { background: var(--bg2); border: 1px solid #7f1d1d; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; }
     .modal h3 { font-size: 16px; font-weight: 800; color: var(--red); margin-bottom: 12px; }
     .modal p  { font-size: 13px; color: var(--gr); line-height: 1.6; margin-bottom: 24px; }
     .modal-actions { display: flex; gap: 10px; }
     .modal-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; }
-    #btn-cancel { background: var(--bg3); color: var(--wh); }
+    #btn-cancel  { background: var(--bg3); color: var(--wh); }
     #btn-confirm { background: var(--red); color: #fff; }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     .footer { text-align: center; margin-top: 40px; font-size: 10px; color: var(--gr2); letter-spacing:.06em; }
   </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div>
     <div class="topbar-title">Founder Command Center</div>
-    <div class="topbar-sub">War Room • Alert-first • v6</div>
+    <div class="topbar-sub">War Room &#8226; v7</div>
   </div>
   <div class="live-badge"><div class="live-dot"></div>LIVE</div>
 </div>
 
-<!-- CONTROLS -->
 <div class="controls">
   <span style="font-size:11px;color:var(--gr);font-weight:600;">Range</span>
   <button class="range-btn" data-range="1d">1D</button>
   <button class="range-btn active" data-range="7d">7D</button>
   <button class="range-btn" data-range="14d">14D</button>
   <button class="range-btn" data-range="30d">30D</button>
-  <button class="btn-action" id="btn-refresh">↺ Refresh</button>
-  <button class="btn-action btn-reset" id="btn-open-reset">⚠ Reset Dash</button>
+  <button class="btn-action" id="btn-refresh">&#8635; Refresh</button>
+  <button class="btn-action btn-export" id="btn-csv">&#8595; CSV</button>
+  <button class="btn-action btn-export" id="btn-json">&#8595; JSON</button>
+  <button class="btn-action btn-reset" id="btn-open-reset">&#9888; Reset</button>
 </div>
 
 <main>
-  <!-- STATUS BAR -->
   <div class="statusbar">
-    <span><b id="status-msg">loading…</b></span>
-    <span>Range <b id="info-range">—</b></span>
-    <span>From <b id="info-from">—</b></span>
-    <span>To <b id="info-to">—</b></span>
-    <span>Generated <b id="info-gen">—</b></span>
+    <span><b id="status-msg">loading&#8230;</b></span>
+    <span>Range <b id="info-range">&#8212;</b></span>
+    <span>From <b id="info-from">&#8212;</b></span>
+    <span>To <b id="info-to">&#8212;</b></span>
+    <span>Generated <b id="info-gen">&#8212;</b></span>
   </div>
 
   <!-- REVENUE TARGET -->
@@ -218,105 +200,176 @@
     <div class="metrics-grid">
       <div class="metric">
         <div class="metric-label">Target EOD</div>
-        <div class="metric-value" id="target-eod">—</div>
-        <div class="metric-sub">Target opzionale — impostalo in app.js.</div>
+        <div class="metric-value" id="target-eod">&#8212;</div>
+        <div class="metric-sub">Imposta DAILY_TARGET_EUR in config</div>
       </div>
       <div class="metric">
         <div class="metric-label">Actual Revenue</div>
-        <div class="metric-value green" id="target-actual">—</div>
-        <div class="metric-sub">Updated <span id="target-updated">—</span></div>
+        <div class="metric-value green" id="target-actual">&#8212;</div>
+        <div class="metric-sub">Updated <span id="target-updated">&#8212;</span></div>
       </div>
     </div>
   </div>
 
   <!-- MONEY & GROWTH -->
-  <div class="section-title">Money & Growth</div>
+  <div class="section-title">Money &amp; Growth</div>
   <div class="card">
     <div class="metrics-grid">
       <div class="metric">
         <div class="metric-label">Revenue (range)</div>
-        <div class="metric-value green" id="rev-range">—</div>
+        <div class="metric-value green" id="rev-range">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Revenue 7D</div>
-        <div class="metric-value" id="rev-7d">—</div>
+        <div class="metric-value" id="rev-7d">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Revenue 30D</div>
-        <div class="metric-value" id="rev-30d">—</div>
+        <div class="metric-value" id="rev-30d">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">ARPPU (range)</div>
-        <div class="metric-value" id="arppu">—</div>
+        <div class="metric-value" id="arppu">&#8212;</div>
         <div class="metric-sub">avg revenue per paid user</div>
       </div>
     </div>
   </div>
 
-  <!-- OPS & SYSTEM -->
-  <div class="section-title">Ops & System Signals</div>
+  <!-- OPS & SYSTEM SIGNALS -->
+  <div class="section-title">Ops &amp; System Signals</div>
   <div class="card">
     <div class="metrics-grid">
       <div class="metric">
         <div class="metric-label">Active users (24h)</div>
-        <div class="metric-value" id="active-24h">—</div>
+        <div class="metric-value" id="active-24h">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">New users (range)</div>
-        <div class="metric-value" id="new-users">—</div>
+        <div class="metric-value" id="new-users">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Paid (range)</div>
-        <div class="metric-value green" id="paid-total">—</div>
+        <div class="metric-value green" id="paid-total">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Revenue / Active</div>
-        <div class="metric-value" id="rev-per-active">—</div>
+        <div class="metric-value" id="rev-per-active">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Messages (range)</div>
-        <div class="metric-value" id="messages">—</div>
+        <div class="metric-value" id="messages">&#8212;</div>
         <div class="metric-sub">totale messaggi utente</div>
       </div>
       <div class="metric">
         <div class="metric-label">Groq calls (range)</div>
-        <div class="metric-value" id="groq-calls">—</div>
-        <div class="metric-sub">chiamate AI — monit. costi</div>
+        <div class="metric-value" id="groq-calls">&#8212;</div>
+        <div class="metric-sub">chiamate Groq</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">GPT-4o calls (range)</div>
+        <div class="metric-value" id="hot-calls">&#8212;</div>
+        <div class="metric-sub">HOT users &#8212; V211</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Dead (range)</div>
+        <div class="metric-value red" id="dead-count">&#8212;</div>
+        <div class="metric-sub">utenti diventati DEAD</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Dead rate</div>
+        <div class="metric-value" id="dead-rate">&#8212;</div>
+        <div class="metric-sub">DEAD / new users</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Reentry organico</div>
+        <div class="metric-value" id="dead-reentry">&#8212;</div>
+        <div class="metric-sub">DEAD &#8594; COLD</div>
       </div>
       <div class="metric">
         <div class="metric-label">Reminders sent</div>
-        <div class="metric-value" id="reminders">—</div>
+        <div class="metric-value" id="reminders">&#8212;</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Locks set (total)</div>
-        <div class="metric-value" id="locks">—</div>
+        <div class="metric-label">Locks set</div>
+        <div class="metric-value" id="locks">&#8212;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALISI CONVERSAZIONI -->
+  <div class="section-title">Analisi Conversazioni</div>
+  <div class="analisi-card">
+    <div class="analisi-grid">
+      <div class="am-metric">
+        <div class="am-label">Msgs / nuovo utente</div>
+        <div class="am-value" id="am-msgs-per-user">&#8212;</div>
+        <div class="am-sub">messages / new_users</div>
+      </div>
+      <div class="am-metric">
+        <div class="am-label">Msgs / acquirente</div>
+        <div class="am-value" id="am-msgs-per-buyer">&#8212;</div>
+        <div class="am-sub">proxy msgs-to-conversion</div>
+      </div>
+      <div class="am-metric">
+        <div class="am-label">Offer rate T1</div>
+        <div class="am-value" id="am-offer-rate">&#8212;</div>
+        <div class="am-sub">t1_link_sent / new_users</div>
+      </div>
+      <div class="am-metric">
+        <div class="am-label">Revenue / msg</div>
+        <div class="am-value" id="am-rev-per-msg">&#8212;</div>
+        <div class="am-sub">efficienza copy (&#162;/msg)</div>
+      </div>
+      <div class="am-metric">
+        <div class="am-label">Funnel drop T1</div>
+        <div class="am-value" id="am-funnel-drop">&#8212;</div>
+        <div class="am-sub">link_sent &#8722; paid T1</div>
+      </div>
+      <div class="am-metric">
+        <div class="am-label">Split HOT / totale LLM</div>
+        <div class="am-value" id="am-provider-split">&#8212;</div>
+        <div class="am-sub">% GPT-4o su totale chiamate</div>
+      </div>
+    </div>
+    <div class="funnel-bar-wrap" id="funnel-vis" style="display:none;">
+      <div class="funnel-row">
+        <span class="f-label">Nuovi</span>
+        <div class="f-bar-bg"><div class="f-bar" id="fb-new" style="background:var(--accent2);width:100%"></div></div>
+        <span class="f-val" id="fv-new">&#8212;</span>
+      </div>
+      <div class="funnel-row">
+        <span class="f-label">Offer T1</span>
+        <div class="f-bar-bg"><div class="f-bar" id="fb-offer" style="background:#7c3aed;"></div></div>
+        <span class="f-val" id="fv-offer">&#8212;</span>
+      </div>
+      <div class="funnel-row">
+        <span class="f-label">Pagato T1</span>
+        <div class="f-bar-bg"><div class="f-bar" id="fb-paid" style="background:var(--green);"></div></div>
+        <span class="f-val" id="fv-paid">&#8212;</span>
       </div>
     </div>
   </div>
 
   <!-- OBJECTIONS -->
-  <div class="section-title">Obiezioni — Breakdown</div>
+  <div class="section-title">Obiezioni &#8212; Breakdown</div>
   <div class="card">
     <div class="metrics-grid" style="margin-bottom:16px">
       <div class="metric">
         <div class="metric-label">Obiezioni totali (range)</div>
-        <div class="metric-value yellow" id="obj-total">—</div>
+        <div class="metric-value yellow" id="obj-total">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Regressioni (range)</div>
-        <div class="metric-value red" id="obj-regression">—</div>
-        <div class="metric-sub">utenti entrati in regression mode</div>
+        <div class="metric-value red" id="obj-regression">&#8212;</div>
+        <div class="metric-sub">utenti in regression mode</div>
       </div>
       <div class="metric">
         <div class="metric-label">Obiezioni / Messaggio</div>
-        <div class="metric-value" id="obj-rate">—</div>
+        <div class="metric-value" id="obj-rate">&#8212;</div>
         <div class="metric-sub">% messaggi con obiezione</div>
       </div>
     </div>
-    <div class="metric-sub" style="margin-bottom:10px;">Breakdown per tipo — MONEY = prezzo, TRUST = fiducia, TIME = rimanda, FREE = vuole gratis, CONTENT = deluso materiale, VALUE = ROI, BOT = sospetto bot, NO = rifiuto netto.</div>
-    <div class="obj-grid" id="obj-breakdown">
-      <!-- populated by JS -->
-    </div>
+    <div class="obj-grid" id="obj-breakdown"></div>
   </div>
 
   <!-- FUNNEL BY TIER -->
@@ -326,126 +379,80 @@
       <table>
         <thead>
           <tr>
-            <th>Tier</th>
-            <th class="num">Link Inviati</th>
-            <th class="num">Pagati</th>
-            <th class="pct">Conversion Rate</th>
-            <th class="num">Reminder 1</th>
-            <th class="num">Reminder 2</th>
-            <th class="num">Locks</th>
+            <th>Tier</th><th class="num">Link Inviati</th><th class="num">Pagati</th>
+            <th class="pct">CR</th><th class="num">Reminder 1</th>
+            <th class="num">Reminder 2</th><th class="num">Locks</th>
           </tr>
         </thead>
         <tbody id="funnel-body">
-          <tr><td colspan="7" style="color:var(--gr);text-align:center;padding:20px;">Caricamento…</td></tr>
+          <tr><td colspan="7" style="color:var(--gr);text-align:center;padding:20px;">Caricamento&#8230;</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="metric-sub" style="margin-top:10px;">Conversion Rate = Paid / Link Sent (se Link Sent = 0 → "—").</div>
   </div>
 
   <!-- REENTRY ANALYTICS -->
-  <div class="section-title">🔁 Reentry Analytics</div>
+  <div class="section-title">Reentry Analytics</div>
   <div class="card">
     <div class="metrics-grid" style="margin-bottom:16px;">
       <div class="metric">
         <div class="metric-label">Links Sent (total)</div>
-        <div class="metric-value" id="re-links">—</div>
+        <div class="metric-value" id="re-links">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Paid (total)</div>
-        <div class="metric-value green" id="re-paid">—</div>
+        <div class="metric-value green" id="re-paid">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Revenue (total)</div>
-        <div class="metric-value green" id="re-revenue">—</div>
+        <div class="metric-value green" id="re-revenue">&#8212;</div>
       </div>
       <div class="metric">
         <div class="metric-label">Conversion Rate</div>
-        <div class="metric-value" id="re-cvr">—</div>
+        <div class="metric-value" id="re-cvr">&#8212;</div>
       </div>
     </div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr>
-            <th>Piano Reentry</th>
-            <th class="num">Links Sent</th>
-            <th class="num">Paid</th>
-            <th class="rev">Revenue</th>
-            <th class="pct">CVR</th>
-          </tr>
+          <tr><th>Piano</th><th class="num">Links Sent</th><th class="num">Paid</th><th class="rev">Revenue</th><th class="pct">CVR</th></tr>
         </thead>
         <tbody id="reentry-body">
-          <tr><td colspan="5" style="color:var(--gr);text-align:center;padding:20px;">Caricamento…</td></tr>
+          <tr><td colspan="5" style="color:var(--gr);text-align:center;padding:20px;">Caricamento&#8230;</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="metric-sub" style="margin-top:10px;">Reentry = acquisto su piano *_reentry dopo scadenza/drop. Paid solo su webhook Whop confermato.</div>
   </div>
 
   <!-- UPGRADES -->
   <div class="section-title">Upgrades (range)</div>
   <div class="card">
     <div class="metrics-grid">
-      <div class="metric">
-        <div class="metric-label">T1 → T2</div>
-        <div class="metric-value" id="up-t1t2">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">T2 → T3</div>
-        <div class="metric-value" id="up-t2t3">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">→ Feet1</div>
-        <div class="metric-value" id="up-feet1">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">→ Feet2</div>
-        <div class="metric-value" id="up-feet2">—</div>
-      </div>
+      <div class="metric"><div class="metric-label">T1 &#8594; T2</div><div class="metric-value" id="up-t1t2">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">T2 &#8594; T3</div><div class="metric-value" id="up-t2t3">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">&#8594; Feet1</div><div class="metric-value" id="up-feet1">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">&#8594; Feet2</div><div class="metric-value" id="up-feet2">&#8212;</div></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       TIP ANALYTICS — V176 (dati da data.tip in /metrics)
-       ══════════════════════════════════════════════════ -->
-  <div class="section-title">💰 Tip Analytics</div>
+  <!-- TIP ANALYTICS -->
+  <div class="section-title">Tip Analytics</div>
   <div class="card tip-card">
     <div class="metrics-grid">
-      <div class="metric">
-        <div class="metric-label">Tips ricevuti (range)</div>
-        <div class="metric-value" id="tip-count">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Revenue tip (range)</div>
-        <div class="metric-value" id="tip-revenue">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Tip medio</div>
-        <div class="metric-value" id="tip-avg">—</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">% su revenue totale</div>
-        <div class="metric-value" id="tip-pct">—</div>
-        <div class="metric-sub">Tip / Revenue totale range</div>
-      </div>
+      <div class="metric"><div class="metric-label">Tips ricevuti (range)</div><div class="metric-value" id="tip-count">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">Revenue tip (range)</div><div class="metric-value" id="tip-revenue">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">Tip medio</div><div class="metric-value" id="tip-avg">&#8212;</div></div>
+      <div class="metric"><div class="metric-label">% su revenue totale</div><div class="metric-value" id="tip-pct">&#8212;</div></div>
     </div>
   </div>
 
-  <div class="footer">
-    v6 • War Room dashboard • Data source: /metrics<br>
-    <span id="footer-ts">—</span>
-  </div>
+  <div class="footer">v7 &#8226; Founder Command Center &#8226; <span id="footer-ts">&#8212;</span></div>
 </main>
 
-<!-- RESET MODAL -->
 <div class="modal-overlay" id="reset-modal">
   <div class="modal">
-    <h3>⚠ RESET DASHBOARD</h3>
-    <p>
-      Azzera tutti i dati METRICS_KV degli ultimi 30 giorni.<br>
-      Operazione irreversibile — usare solo per test.
-    </p>
+    <h3>&#9888; RESET DASHBOARD</h3>
+    <p>Azzera tutti i dati METRICS_KV degli ultimi 30 giorni.<br>Operazione irreversibile.</p>
     <div class="modal-actions">
       <button id="btn-cancel">Annulla</button>
       <button id="btn-confirm">Conferma Reset</button>
@@ -454,230 +461,295 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // CONFIG — modifica qui
-// ══════════════════════════════════════════════════════════════
-const WORKER_BASE = "https://gabriafterdark.obsidianmedia.space";
-const DASH_TOKEN  = "123";          // lascia vuoto se usi X-API-Key in locale
-const DAILY_TARGET_EUR = null;   // es: 150  — null = nasconde target
+// ================================================================
+const WORKER_BASE      = "https://gabriafterdark.obsidianmedia.space";
+const DASH_TOKEN       = "123";
+const DAILY_TARGET_EUR = null;  // es: 150 — null = nasconde target
 
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // STATE
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+const $  = id => document.getElementById(id);
 let currentRange = "7d";
 let rev7d  = null;
 let rev30d = null;
 
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // HELPERS
-// ══════════════════════════════════════════════════════════════
-const $ = id => document.getElementById(id);
-const fmtEur  = cents => cents != null ? "€" + (cents / 100).toFixed(2) : "—";
-const fmtNum  = n     => (n != null && n !== 0) ? n.toLocaleString("it-IT") : "—";
-const fmtPct  = r     => (r != null && r !== 0) ? (r * 100).toFixed(1) + "%" : "—";
-const fmtDate = s     => s ? s.replace("T", " ").slice(0, 16) : "—";
+// ================================================================
+const fmtEur  = c => c  != null ? "\u20AC" + (c  / 100).toFixed(2) : "\u2014";
+const fmtNum  = n => (n != null && n !== 0) ? Number(n).toLocaleString("it-IT") : "\u2014";
+const fmtDate = s => s ? s.replace("T"," ").slice(0,16) : "\u2014";
 
 function setVal(id, val) {
   const el = $(id);
-  if (el) el.textContent = val ?? "—";
+  if (el) el.textContent = val ?? "\u2014";
 }
 
-// ══════════════════════════════════════════════════════════════
-// FETCH METRICS
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+// FETCH
+// ================================================================
 async function fetchMetrics(range) {
   const headers = {};
   if (DASH_TOKEN) headers["X-DASH-TOKEN"] = DASH_TOKEN;
-  const url = `${WORKER_BASE}/metrics?range=${range}`;
-  const res = await fetch(url, { headers });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const res = await fetch(`${WORKER_BASE}/metrics?range=${range}`, { headers });
+  if (!res.ok) throw new Error("HTTP " + res.status);
   return res.json();
 }
 
-// ══════════════════════════════════════════════════════════════
-// POPULATE DASHBOARD
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+// LOAD + RENDER
+// ================================================================
 async function load(range) {
-  setVal("status-msg", "loading…");
+  setVal("status-msg", "loading\u2026");
   try {
     const data = await fetchMetrics(range);
 
-    // ── Status bar ──────────────────────────────────────────
-    setVal("status-msg",  "✅ OK");
-    setVal("info-range",  data.range || range);
-    setVal("info-from",   data.period?.from || "—");
-    setVal("info-to",     data.period?.to   || "—");
-    setVal("info-gen",    fmtDate(data.generated_at));
-    setVal("footer-ts",   fmtDate(data.generated_at));
+    setVal("status-msg", "\u2705 OK");
+    setVal("info-range", data.range || range);
+    setVal("info-from",  data.period?.from || "\u2014");
+    setVal("info-to",    data.period?.to   || "\u2014");
+    setVal("info-gen",   fmtDate(data.generated_at));
+    setVal("footer-ts",  fmtDate(data.generated_at));
 
-    // ── Revenue / KPI ────────────────────────────────────────
-    const kpi  = data.kpi  || {};
-    const ops  = data.ops  || {};
-    const tiers = data.tiers || {};
+    const kpi    = data.kpi        || {};
+    const ops    = data.ops        || {};
+    const tiers  = data.tiers      || {};
+    const levers = data.levers     || {};
+    const obj    = data.objections || {};
 
+    // Revenue
     const revRange = kpi.revenue_range_cents ?? null;
-    setVal("rev-range",  fmtEur(revRange));
-
-    // store 7d/30d for cross-range display
+    setVal("rev-range", fmtEur(revRange));
     if (range === "7d")  { rev7d  = revRange; setVal("rev-7d",  fmtEur(rev7d));  }
     if (range === "30d") { rev30d = revRange; setVal("rev-30d", fmtEur(rev30d)); }
     if (range !== "7d"  && rev7d  !== null) setVal("rev-7d",  fmtEur(rev7d));
     if (range !== "30d" && rev30d !== null) setVal("rev-30d", fmtEur(rev30d));
+    setVal("arppu", fmtEur(kpi.arppu_range_cents ?? null));
 
-    setVal("arppu",       fmtEur(kpi.arppu_range_cents ?? null));
-
-    // ── Target ───────────────────────────────────────────────
+    // Target
     if (DAILY_TARGET_EUR) {
-      setVal("target-eod",     "€" + DAILY_TARGET_EUR.toFixed(2));
-      setVal("target-actual",  fmtEur(revRange));
+      setVal("target-eod",    "\u20AC" + DAILY_TARGET_EUR.toFixed(2));
+      setVal("target-actual", fmtEur(revRange));
       setVal("target-updated", fmtDate(data.generated_at));
-      const targetEl = $("target-actual");
-      if (targetEl && revRange !== null) {
-        const hit = revRange >= DAILY_TARGET_EUR * 100;
-        targetEl.style.color = hit ? "var(--green)" : "var(--red)";
-      }
+      const el = $("target-actual");
+      if (el && revRange !== null)
+        el.style.color = revRange >= DAILY_TARGET_EUR * 100 ? "var(--green)" : "var(--red)";
     } else {
-      setVal("target-eod",    "—");
+      setVal("target-eod", "\u2014");
       setVal("target-actual", fmtEur(revRange));
       setVal("target-updated", fmtDate(data.generated_at));
     }
 
-    // ── Ops ──────────────────────────────────────────────────
-    const totalPaid = kpi.total_paid_range ?? 0;
+    // Ops
     const active24  = ops.active_users_24h ?? null;
-
-    setVal("active-24h",     fmtNum(active24));
-    setVal("new-users",      fmtNum(ops.new_users_range ?? null));
-    setVal("paid-total",     fmtNum(totalPaid));
-    setVal("messages",       fmtNum(ops.messages_total_range ?? null));
-    setVal("groq-calls",     fmtNum(ops.groq_calls_range ?? null));
-
-    const revPerActive = (active24 && active24 > 0 && revRange != null)
-      ? fmtEur(Math.round(revRange / active24)) : "—";
-    setVal("rev-per-active", revPerActive);
-
-    const levers = data.levers || {};
+    const totalPaid = kpi.total_paid_range ?? 0;
+    setVal("active-24h",   fmtNum(active24));
+    setVal("new-users",    fmtNum(ops.new_users_range    ?? null));
+    setVal("paid-total",   fmtNum(totalPaid));
+    setVal("messages",     fmtNum(ops.messages_total_range ?? null));
+    setVal("groq-calls",   fmtNum(ops.groq_calls_range   ?? null));
+    setVal("hot-calls",    fmtNum(ops.hot_calls_range    ?? null));
+    setVal("dead-count",   fmtNum(ops.dead_count_range   ?? null));
+    setVal("dead-reentry", fmtNum(ops.dead_reentry_range ?? null));
+    setVal("dead-rate",    ops.dead_rate != null ? (ops.dead_rate * 100).toFixed(1) + "%" : "\u2014");
+    setVal("rev-per-active", (active24 && active24 > 0 && revRange != null)
+      ? fmtEur(Math.round(revRange / active24)) : "\u2014");
     setVal("reminders", fmtNum(levers.reminder_sent_total ?? null));
-    setVal("locks",     fmtNum(levers.locks_set_total ?? null));
+    setVal("locks",     fmtNum(levers.locks_set_total     ?? null));
 
-    // ── Objections ───────────────────────────────────────────
-    const obj = data.objections || {};
+    // Objections
     const msgTotal = ops.messages_total_range || 0;
     setVal("obj-total",      fmtNum(obj.total_range ?? null));
     setVal("obj-regression", fmtNum(obj.regression_count_range ?? null));
     setVal("obj-rate", msgTotal > 0 && obj.total_range
-      ? ((obj.total_range / msgTotal) * 100).toFixed(1) + "%" : "—");
+      ? ((obj.total_range / msgTotal) * 100).toFixed(1) + "%" : "\u2014");
 
-    const OBJ_DESC = {
-      MONEY: "prezzo", TRUST: "fiducia", TIME: "rimanda",
-      FREE: "vuole gratis", CONTENT: "deluso materiale",
-      VALUE: "ROI", BOT: "sospetto bot", NO: "rifiuto netto"
-    };
+    const OBJ_DESC = { MONEY:"prezzo",TRUST:"fiducia",TIME:"rimanda",FREE:"vuole gratis",CONTENT:"deluso materiale",VALUE:"ROI",BOT:"sospetto bot",NO:"rifiuto netto" };
     const bkt = obj.by_type || {};
     const objGrid = $("obj-breakdown");
-    if (objGrid) {
-      objGrid.innerHTML = Object.entries(OBJ_DESC).map(([k, desc]) =>
-        `<div class="obj-item">
-          <div class="obj-type">${k}</div>
-          <div class="obj-count">${bkt[k] ?? 0}</div>
-          <div class="obj-desc">${desc}</div>
-        </div>`
-      ).join("");
-    }
+    if (objGrid) objGrid.innerHTML = Object.entries(OBJ_DESC).map(([k,desc]) =>
+      `<div class="obj-item"><div class="obj-type">${k}</div><div class="obj-count">${bkt[k] ?? 0}</div><div class="obj-desc">${desc}</div></div>`
+    ).join("");
 
-    // ── Funnel by Tier ───────────────────────────────────────
-    const TIER_LABELS = {
-      t1: "T1 — The Key",
-      t2: "T2 — Behind Closed Doors",
-      t3: "T3 — No Secrets",
-      feet1: "Feet1 — Bare",
-      feet2: "Feet2 — Closer",
-    };
+    // Funnel by Tier
+    const TIER_LABELS = { t1:"T1 — The Key",t2:"T2 — Behind Closed Doors",t3:"T3 — No Secrets",feet1:"Feet1 — Bare",feet2:"Feet2 — Closer" };
     const funnelBody = $("funnel-body");
-    if (funnelBody) {
-      const rows = Object.entries(TIER_LABELS).map(([key, label]) => {
-        const t = tiers[key] || {};
-        const conv = t.link_sent_range > 0
-          ? ((t.paid_range / t.link_sent_range) * 100).toFixed(1) + "%" : "—";
-        return `<tr>
-          <td>${label}</td>
-          <td class="num">${fmtNum(t.link_sent_range)}</td>
-          <td class="num">${fmtNum(t.paid_range)}</td>
-          <td class="pct">${conv}</td>
-          <td class="num">${fmtNum(t.reminder1_sent_range)}</td>
-          <td class="num">${fmtNum(t.reminder2_sent_range)}</td>
-          <td class="num">${fmtNum(t.lock_set_range)}</td>
-        </tr>`;
-      });
-      funnelBody.innerHTML = rows.join("") || `<tr><td colspan="7" style="color:var(--gr);text-align:center;">Nessun dato</td></tr>`;
-    }
+    if (funnelBody) funnelBody.innerHTML = Object.entries(TIER_LABELS).map(([key,label]) => {
+      const t = tiers[key] || {};
+      const conv = t.link_sent_range > 0 ? ((t.paid_range / t.link_sent_range) * 100).toFixed(1) + "%" : "\u2014";
+      return `<tr><td>${label}</td><td class="num">${fmtNum(t.link_sent_range)}</td><td class="num">${fmtNum(t.paid_range)}</td><td class="pct">${conv}</td><td class="num">${fmtNum(t.reminder1_sent_range)}</td><td class="num">${fmtNum(t.reminder2_sent_range)}</td><td class="num">${fmtNum(t.lock_set_range)}</td></tr>`;
+    }).join("");
 
-    // ── Reentry ──────────────────────────────────────────────
+    // Reentry
     const re = data.reentry || {};
-    const reLs  = re.link_sent   || {};
-    const rePd  = re.paid        || {};
-    const reRev = re.revenue_cents || {};
-    const reCvr = re.cvr         || {};
-
+    const reLs = re.link_sent || {}, rePd = re.paid || {}, reRev = re.revenue_cents || {}, reCvr = re.cvr || {};
     setVal("re-links",   fmtNum(reLs.total ?? null));
     setVal("re-paid",    fmtNum(rePd.total ?? null));
     setVal("re-revenue", fmtEur(reRev.total ?? null));
-    setVal("re-cvr",     reCvr.total != null ? (reCvr.total * 100).toFixed(1) + "%" : "—");
-
-    const RE_LABELS = {
-      tier1_reentry: "T1 Reentry",
-      tier2_reentry: "T2 Reentry",
-      tier3_reentry: "T3 Reentry",
-      feet1_reentry: "Feet1 Reentry",
-      feet2_reentry: "Feet2 Reentry",
-    };
+    setVal("re-cvr",     reCvr.total != null ? (reCvr.total * 100).toFixed(1) + "%" : "\u2014");
+    const RE_LABELS = { tier1_reentry:"T1 Reentry",tier2_reentry:"T2 Reentry",tier3_reentry:"T3 Reentry",feet1_reentry:"Feet1 Reentry",feet2_reentry:"Feet2 Reentry" };
     const reBody = $("reentry-body");
-    if (reBody) {
-      const rows = Object.entries(RE_LABELS).map(([key, label]) => {
-        const cvr = reCvr[key] != null ? (reCvr[key] * 100).toFixed(1) + "%" : "—";
-        return `<tr>
-          <td>${label}</td>
-          <td class="num">${fmtNum(reLs[key] ?? null)}</td>
-          <td class="num">${fmtNum(rePd[key] ?? null)}</td>
-          <td class="rev">${fmtEur(reRev[key] ?? null)}</td>
-          <td class="pct">${cvr}</td>
-        </tr>`;
-      });
-      reBody.innerHTML = rows.join("") || `<tr><td colspan="5" style="color:var(--gr);text-align:center;">Nessun dato</td></tr>`;
-    }
+    if (reBody) reBody.innerHTML = Object.entries(RE_LABELS).map(([key,label]) => {
+      const cvr = reCvr[key] != null ? (reCvr[key] * 100).toFixed(1) + "%" : "\u2014";
+      return `<tr><td>${label}</td><td class="num">${fmtNum(reLs[key] ?? null)}</td><td class="num">${fmtNum(rePd[key] ?? null)}</td><td class="rev">${fmtEur(reRev[key] ?? null)}</td><td class="pct">${cvr}</td></tr>`;
+    }).join("");
 
-    // ── Upgrades ─────────────────────────────────────────────
+    // Upgrades
     const upgrades = data.upgrades || {};
     setVal("up-t1t2",  fmtNum(upgrades.t1_to_t2 ?? null));
     setVal("up-t2t3",  fmtNum(upgrades.t2_to_t3 ?? null));
     setVal("up-feet1", fmtNum(upgrades.to_feet1  ?? null));
     setVal("up-feet2", fmtNum(upgrades.to_feet2  ?? null));
 
-    // ════════════════════════════════════════════════════════
-    // TIP ANALYTICS — V176
-    // data.tip: { count_range, revenue_cents_range, avg_tip_cents, revenue_pct }
-    // ════════════════════════════════════════════════════════
+    // Tip
     const tip = data.tip || {};
-    const tipCount   = tip.count_range         ?? null;
-    const tipRevEur  = tip.revenue_cents_range  ?? null;
-    const tipAvgEur  = tip.avg_tip_cents        ?? null;
-    const tipPct     = tip.revenue_pct          ?? null;
+    setVal("tip-count",   tip.count_range > 0         ? tip.count_range   : "\u2014");
+    setVal("tip-revenue", tip.revenue_cents_range > 0  ? fmtEur(tip.revenue_cents_range) : "\u2014");
+    setVal("tip-avg",     tip.avg_tip_cents > 0        ? fmtEur(tip.avg_tip_cents) : "\u2014");
+    setVal("tip-pct",     tip.revenue_pct > 0          ? tip.revenue_pct.toFixed(1) + "%" : "\u2014");
 
-    setVal("tip-count",   tipCount && tipCount > 0   ? tipCount   : "—");
-    setVal("tip-revenue", tipRevEur && tipRevEur > 0 ? fmtEur(tipRevEur) : "—");
-    setVal("tip-avg",     tipAvgEur && tipAvgEur > 0 ? fmtEur(tipAvgEur) : "—");
-    setVal("tip-pct",     tipPct != null && tipPct > 0 ? tipPct.toFixed(1) + "%" : "—");
-    // ════════════════════════════════════════════════════════
+    // Analisi Conversazioni
+    renderAnalisi(data);
 
-  } catch (e) {
-    setVal("status-msg", "❌ Errore: " + e.message);
+  } catch(e) {
+    setVal("status-msg", "\u274C Errore: " + e.message);
     console.error(e);
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// RANGE BUTTONS
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+// ANALISI CONVERSAZIONI — metriche derivate lato JS
+// ================================================================
+function renderAnalisi(data) {
+  const ops  = data.ops  || {};
+  const kpi  = data.kpi  || {};
+  const t1   = (data.tiers || {}).t1 || {};
+  const msgs  = ops.messages_total_range || 0;
+  const newU  = ops.new_users_range      || 0;
+  const paid  = kpi.total_paid_range     || 0;
+  const rev   = kpi.revenue_range_cents  || 0;
+  const t1s   = t1.link_sent_range       || 0;
+  const t1p   = t1.paid_range            || 0;
+  const groq  = ops.groq_calls_range     || 0;
+  const hot   = ops.hot_calls_range      || 0;
+
+  amSet("am-msgs-per-user",    newU > 0 ? (msgs / newU).toFixed(1) : null,                         "");
+  amSet("am-msgs-per-buyer",   paid > 0 ? Math.round(msgs / paid)  : null,                         "");
+  amSet("am-offer-rate",       newU > 0 ? ((t1s / newU) * 100).toFixed(1) + "%" : null,            "");
+  amSet("am-rev-per-msg",      msgs > 0 ? "\u00A2" + (rev / msgs).toFixed(2) : null,               "");
+  amSet("am-funnel-drop",      t1s  > 0 ? (t1s - t1p) : null,         (t1s - t1p) > t1s * .8 ? "warn" : "");
+  amSet("am-provider-split",  (groq + hot) > 0 ? ((hot / (groq + hot)) * 100).toFixed(1) + "%" : null, "");
+
+  if (newU > 0) {
+    const vis = $("funnel-vis");
+    if (vis) vis.style.display = "";
+    fBar("new",   newU, newU, newU);
+    fBar("offer", t1s,  newU, t1s);
+    fBar("paid",  t1p,  newU, t1p);
+  }
+}
+
+function amSet(id, val, cls) {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = val != null ? val : "\u2014";
+  el.className   = "am-value" + (cls ? " " + cls : "");
+}
+
+function fBar(key, val, max, display) {
+  const bar = $("fb-" + key), lbl = $("fv-" + key);
+  if (bar) bar.style.width = (max > 0 ? Math.min(100, (val / max) * 100) : 0) + "%";
+  if (lbl) lbl.textContent = display;
+}
+
+// ================================================================
+// EXPORT CSV / JSON
+// ================================================================
+const EXPORT_RANGES = ["1d","7d","14d","30d"];
+
+async function fetchAll() {
+  const headers = {};
+  if (DASH_TOKEN) headers["X-DASH-TOKEN"] = DASH_TOKEN;
+  const settled = await Promise.allSettled(
+    EXPORT_RANGES.map(r => fetch(`${WORKER_BASE}/metrics?range=${r}`, { headers })
+      .then(res => res.ok ? res.json() : null).catch(() => null))
+  );
+  const out = {};
+  EXPORT_RANGES.forEach((r, i) => { out[r] = settled[i].value ?? null; });
+  return out;
+}
+
+function flattenCSV(range, d) {
+  if (!d) return null;
+  const ops = d.ops || {}, kpi = d.kpi || {};
+  const t1  = (d.tiers || {}).t1 || {}, t2 = (d.tiers || {}).t2 || {}, t3 = (d.tiers || {}).t3 || {};
+  const obj = d.objections || {}, bt = obj.by_type || {};
+  const msgs = ops.messages_total_range || 0, newU = ops.new_users_range || 0;
+  const paid = kpi.total_paid_range || 0, rev = kpi.revenue_range_cents || 0;
+  const t1s = t1.link_sent_range || 0;
+  const groq = ops.groq_calls_range || 0, hot = ops.hot_calls_range || 0;
+  return {
+    range, generated_at: d.generated_at || "",
+    revenue_cents: rev, total_paid: paid, arppu_cents: kpi.arppu_range_cents || 0,
+    t1_conv_rate: kpi.t1_conversion_range || 0, messages: msgs, new_users: newU,
+    active_24h: ops.active_users_24h || 0, groq_calls: groq, hot_calls: hot,
+    dead_count: ops.dead_count_range || 0, dead_reentry: ops.dead_reentry_range || 0,
+    dead_rate: ops.dead_rate ?? "",
+    t1_link_sent: t1s, t1_paid: t1.paid_range || 0,
+    t2_link_sent: t2.link_sent_range || 0, t2_paid: t2.paid_range || 0,
+    t3_paid: t3.paid_range || 0,
+    objections_total: obj.total_range || 0, regression_count: obj.regression_count_range || 0,
+    obj_MONEY: bt.MONEY||0, obj_TRUST: bt.TRUST||0, obj_TIME: bt.TIME||0, obj_FREE: bt.FREE||0,
+    obj_CONTENT: bt.CONTENT||0, obj_VALUE: bt.VALUE||0, obj_BOT: bt.BOT||0, obj_NO: bt.NO||0,
+    msgs_per_new_user:  newU > 0 ? +(msgs / newU).toFixed(2) : "",
+    msgs_per_buyer:     paid > 0 ? Math.round(msgs / paid)   : "",
+    offer_rate_t1:      newU > 0 ? +(t1s / newU).toFixed(4)  : "",
+    rev_per_msg_cents:  msgs > 0 ? +(rev  / msgs).toFixed(4) : "",
+    hot_pct_of_llm:    (groq + hot) > 0 ? +((hot / (groq + hot)).toFixed(4)) : "",
+  };
+}
+
+function download(content, name, mime) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+async function exportCSV() {
+  const btn = $("btn-csv");
+  if (btn) { btn.classList.add("loading"); btn.textContent = "\u23F3 CSV"; }
+  try {
+    const all  = await fetchAll();
+    const rows = EXPORT_RANGES.map(r => flattenCSV(r, all[r])).filter(Boolean);
+    if (!rows.length) return;
+    const keys  = Object.keys(rows[0]);
+    const lines = [keys.join(","), ...rows.map(r =>
+      keys.map(k => { const v = r[k]; return (typeof v === "string" && v.includes(",")) ? `"${v}"` : (v ?? ""); }).join(",")
+    )];
+    download(lines.join("\r\n"), `gabriella_metrics_${new Date().toISOString().slice(0,10)}.csv`, "text/csv");
+  } finally {
+    if (btn) { btn.classList.remove("loading"); btn.textContent = "\u2193 CSV"; }
+  }
+}
+
+async function exportJSON() {
+  const btn = $("btn-json");
+  if (btn) { btn.classList.add("loading"); btn.textContent = "\u23F3 JSON"; }
+  try {
+    const all = await fetchAll();
+    download(JSON.stringify(all, null, 2), `gabriella_metrics_${new Date().toISOString().slice(0,10)}.json`, "application/json");
+  } finally {
+    if (btn) { btn.classList.remove("loading"); btn.textContent = "\u2193 JSON"; }
+  }
+}
+
+// ================================================================
+// RANGE BUTTONS + CONTROLS
+// ================================================================
 document.querySelectorAll(".range-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
@@ -688,34 +760,32 @@ document.querySelectorAll(".range-btn").forEach(btn => {
 });
 
 $("btn-refresh").addEventListener("click", () => load(currentRange));
+$("btn-csv").addEventListener("click", exportCSV);
+$("btn-json").addEventListener("click", exportJSON);
 
-// ══════════════════════════════════════════════════════════════
+// ================================================================
 // RESET MODAL
-// ══════════════════════════════════════════════════════════════
-$("btn-open-reset").addEventListener("click", () => {
-  $("reset-modal").classList.add("open");
-});
-$("btn-cancel").addEventListener("click", () => {
-  $("reset-modal").classList.remove("open");
-});
+// ================================================================
+$("btn-open-reset").addEventListener("click", () => $("reset-modal").classList.add("open"));
+$("btn-cancel").addEventListener("click",     () => $("reset-modal").classList.remove("open"));
 $("btn-confirm").addEventListener("click", async () => {
   $("reset-modal").classList.remove("open");
-  setVal("status-msg", "🔄 Reset in corso…");
+  setVal("status-msg", "Reset in corso\u2026");
   try {
     const headers = { "Content-Type": "application/json" };
     if (DASH_TOKEN) headers["X-DASH-TOKEN"] = DASH_TOKEN;
     const res = await fetch(`${WORKER_BASE}/metrics/reset`, { method: "POST", headers });
     if (!res.ok) throw new Error("HTTP " + res.status);
-    setVal("status-msg", "✅ Reset completato");
+    setVal("status-msg", "\u2705 Reset completato");
     setTimeout(() => load(currentRange), 1200);
-  } catch (e) {
-    setVal("status-msg", "❌ Reset fallito: " + e.message);
+  } catch(e) {
+    setVal("status-msg", "\u274C Reset fallito: " + e.message);
   }
 });
 
-// ══════════════════════════════════════════════════════════════
-// INIT — carica 7d + side-load 30d per campo Rev 30D
-// ══════════════════════════════════════════════════════════════
+// ================================================================
+// INIT
+// ================================================================
 load("7d");
 fetchMetrics("30d").then(d => {
   rev30d = d?.kpi?.revenue_range_cents ?? null;
