@@ -527,6 +527,9 @@ async function load(range) {
     if (range === "30d") { rev30d = revRange; setVal("rev-30d", fmtEur(rev30d)); }
     if (range !== "7d"  && rev7d  !== null) setVal("rev-7d",  fmtEur(rev7d));
     if (range !== "30d" && rev30d !== null) setVal("rev-30d", fmtEur(rev30d));
+    // Sempre aggiorna le companion revenue dalle API se non siamo gia' su quel range
+    if (range !== "7d")  fetchMetrics("7d").then(d  => { rev7d  = d?.kpi?.revenue_range_cents ?? 0; setVal("rev-7d",  fmtEur(rev7d));  }).catch(() => {});
+    if (range !== "30d") fetchMetrics("30d").then(d => { rev30d = d?.kpi?.revenue_range_cents ?? 0; setVal("rev-30d", fmtEur(rev30d)); }).catch(() => {});
     setVal("arppu", fmtEur(kpi.arppu_range_cents ?? null));
 
     // Target
@@ -649,6 +652,15 @@ function renderAnalisi(data) {
     fBar("new",   newU, newU, newU);
     fBar("offer", t1s,  newU, t1s);
     fBar("paid",  t1p,  newU, t1p);
+  } else {
+    // Nascondi e azzera la barra quando non ci sono utenti (es. dopo reset)
+    const vis = $("funnel-vis");
+    if (vis) vis.style.display = "none";
+    ["new","offer","paid"].forEach(k => {
+      const bar = $("fb-" + k), lbl = $("fv-" + k);
+      if (bar) bar.style.width = "0%";
+      if (lbl) lbl.textContent = "\u2014";
+    });
   }
 }
 
