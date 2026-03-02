@@ -32,7 +32,6 @@
       font-size: 14px; min-height: 100vh; -webkit-font-smoothing: antialiased;
     }
 
-    /* TOP BAR */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       display: flex; align-items: center; gap: 12px;
@@ -46,7 +45,6 @@
     .live-dot     { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* CONTROLS */
     .controls {
       display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
       padding: 14px 20px; border-bottom: 1px solid var(--bd);
@@ -70,10 +68,8 @@
     .btn-export:hover   { background: rgba(124,58,237,.15); border-color: var(--accent2); }
     .btn-export.loading { opacity: .5; pointer-events: none; }
 
-    /* MAIN */
     main { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
 
-    /* STATUS */
     .statusbar {
       display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
       padding: 12px 16px; border-radius: 10px;
@@ -83,19 +79,16 @@
     .statusbar b { color: var(--wh); }
     #status-msg { color: var(--yellow); font-weight: 600; }
 
-    /* SECTION TITLE */
     .section-title {
       font-size: 11px; font-weight: 700; letter-spacing:.12em; text-transform:uppercase;
       color: var(--gr); margin-bottom: 12px; margin-top: 28px;
     }
 
-    /* CARD */
     .card {
       background: var(--bg2); border: 1px solid var(--bd);
       border-radius: 12px; padding: 20px; margin-bottom: 16px;
     }
 
-    /* METRICS GRID */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; }
     .metric { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 14px 16px; }
     .metric-label { font-size: 10px; color: var(--gr); letter-spacing:.04em; margin-bottom: 6px; }
@@ -105,7 +98,6 @@
     .metric-value.red    { color: var(--red); }
     .metric-sub { font-size: 10px; color: var(--gr2); margin-top: 3px; }
 
-    /* special cards */
     .target-card { background: linear-gradient(135deg,#1a103a,#0f0a24); border-color: #2d1b69; }
     .target-card .metric-value { color: var(--accent2); }
     .tip-card { border-color: #44300a; background: linear-gradient(135deg,#1a1200,#111008); }
@@ -114,7 +106,6 @@
     .tip-card .metric-label { color: #a37c20; }
     .tip-card .metric-sub   { color: #6b5010; }
 
-    /* TABLE */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     thead th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; letter-spacing:.08em; text-transform:uppercase; color: var(--gr); border-bottom: 1px solid var(--bd); }
@@ -125,14 +116,12 @@
     td.pct { text-align: right; color: var(--accent2); font-weight: 700; }
     td.rev { text-align: right; color: var(--green); font-weight: 700; }
 
-    /* OBJ GRID */
     .obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 8px; }
     .obj-item { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 10px 12px; }
     .obj-type  { font-size: 10px; font-weight: 700; letter-spacing:.06em; text-transform:uppercase; color: var(--yellow); margin-bottom:4px; }
     .obj-count { font-size: 20px; font-weight: 800; color: var(--wh); }
     .obj-desc  { font-size: 9px; color: var(--gr2); margin-top: 2px; }
 
-    /* ANALISI CONVERSAZIONI */
     .analisi-card { background: var(--bg2); border: 1px solid var(--bd2); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
     .analisi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; }
     .am-metric { background: var(--bg3); border: 1px solid var(--bd); border-radius: 8px; padding: 14px 16px; }
@@ -148,7 +137,6 @@
     .f-bar     { height: 100%; border-radius: 4px; transition: width .5s ease; }
     .f-val     { font-size: 10px; color: var(--gr); width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
 
-    /* MODAL */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal { background: var(--bg2); border: 1px solid #7f1d1d; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; }
@@ -159,7 +147,6 @@
     #btn-cancel  { background: var(--bg3); color: var(--wh); }
     #btn-confirm { background: var(--red); color: #fff; }
 
-    /* FOOTER */
     .footer { text-align: center; margin-top: 40px; font-size: 10px; color: var(--gr2); letter-spacing:.06em; }
   </style>
 </head>
@@ -168,7 +155,7 @@
 <div class="topbar">
   <div>
     <div class="topbar-title">Founder Command Center</div>
-    <div class="topbar-sub">War Room &#8226; v7</div>
+    <div class="topbar-sub">War Room &#8226; v8</div>
   </div>
   <div class="live-badge"><div class="live-dot"></div>LIVE</div>
 </div>
@@ -292,6 +279,12 @@
       <div class="metric">
         <div class="metric-label">Locks set</div>
         <div class="metric-value" id="locks">&#8212;</div>
+      </div>
+      <!-- V8: NUOVO — riacquisti -->
+      <div class="metric">
+        <div class="metric-label">Riacquisti (range)</div>
+        <div class="metric-value yellow" id="repurchase-total">&#8212;</div>
+        <div class="metric-sub">pagamenti su tier già acquistati</div>
       </div>
     </div>
   </div>
@@ -446,7 +439,7 @@
     </div>
   </div>
 
-  <div class="footer">v7 &#8226; Founder Command Center &#8226; <span id="footer-ts">&#8212;</span></div>
+  <div class="footer">v8 &#8226; Founder Command Center &#8226; <span id="footer-ts">&#8212;</span></div>
 </main>
 
 <div class="modal-overlay" id="reset-modal">
@@ -461,24 +454,15 @@
 </div>
 
 <script>
-// ================================================================
-// CONFIG — modifica qui
-// ================================================================
 const WORKER_BASE      = "https://gabriafterdark.obsidianmedia.space";
 const DASH_TOKEN       = "123";
-const DAILY_TARGET_EUR = null;  // es: 150 — null = nasconde target
+const DAILY_TARGET_EUR = null;
 
-// ================================================================
-// STATE
-// ================================================================
 const $  = id => document.getElementById(id);
 let currentRange = "7d";
 let rev7d  = null;
 let rev30d = null;
 
-// ================================================================
-// HELPERS
-// ================================================================
 const fmtEur  = c => c  != null ? "\u20AC" + (c  / 100).toFixed(2) : "\u2014";
 const fmtNum  = n => (n != null && n !== 0) ? Number(n).toLocaleString("it-IT") : "\u2014";
 const fmtDate = s => s ? s.replace("T"," ").slice(0,16) : "\u2014";
@@ -488,9 +472,6 @@ function setVal(id, val) {
   if (el) el.textContent = val ?? "\u2014";
 }
 
-// ================================================================
-// FETCH
-// ================================================================
 async function fetchMetrics(range) {
   const headers = {};
   if (DASH_TOKEN) headers["X-DASH-TOKEN"] = DASH_TOKEN;
@@ -499,9 +480,6 @@ async function fetchMetrics(range) {
   return res.json();
 }
 
-// ================================================================
-// LOAD + RENDER
-// ================================================================
 async function load(range) {
   setVal("status-msg", "loading\u2026");
   try {
@@ -520,19 +498,14 @@ async function load(range) {
     const levers = data.levers     || {};
     const obj    = data.objections || {};
 
-    // Revenue
     const revRange = kpi.revenue_range_cents ?? null;
     setVal("rev-range", fmtEur(revRange));
     if (range === "7d")  { rev7d  = revRange; setVal("rev-7d",  fmtEur(rev7d));  }
     if (range === "30d") { rev30d = revRange; setVal("rev-30d", fmtEur(rev30d)); }
-    if (range !== "7d"  && rev7d  !== null) setVal("rev-7d",  fmtEur(rev7d));
-    if (range !== "30d" && rev30d !== null) setVal("rev-30d", fmtEur(rev30d));
-    // Sempre aggiorna le companion revenue dalle API se non siamo gia' su quel range
     if (range !== "7d")  fetchMetrics("7d").then(d  => { rev7d  = d?.kpi?.revenue_range_cents ?? 0; setVal("rev-7d",  fmtEur(rev7d));  }).catch(() => {});
     if (range !== "30d") fetchMetrics("30d").then(d => { rev30d = d?.kpi?.revenue_range_cents ?? 0; setVal("rev-30d", fmtEur(rev30d)); }).catch(() => {});
     setVal("arppu", fmtEur(kpi.arppu_range_cents ?? null));
 
-    // Target
     if (DAILY_TARGET_EUR) {
       setVal("target-eod",    "\u20AC" + DAILY_TARGET_EUR.toFixed(2));
       setVal("target-actual", fmtEur(revRange));
@@ -546,7 +519,6 @@ async function load(range) {
       setVal("target-updated", fmtDate(data.generated_at));
     }
 
-    // Ops
     const active24  = ops.active_users_24h ?? null;
     const totalPaid = kpi.total_paid_range ?? 0;
     setVal("active-24h",   fmtNum(active24));
@@ -562,8 +534,9 @@ async function load(range) {
       ? fmtEur(Math.round(revRange / active24)) : "\u2014");
     setVal("reminders", fmtNum(levers.reminder_sent_total ?? null));
     setVal("locks",     fmtNum(levers.locks_set_total     ?? null));
+    // V8: riacquisti
+    setVal("repurchase-total", fmtNum(ops.repurchase_total_range ?? null));
 
-    // Objections
     const msgTotal = ops.messages_total_range || 0;
     setVal("obj-total",      fmtNum(obj.total_range ?? null));
     setVal("obj-regression", fmtNum(obj.regression_count_range ?? null));
@@ -577,7 +550,6 @@ async function load(range) {
       `<div class="obj-item"><div class="obj-type">${k}</div><div class="obj-count">${bkt[k] ?? 0}</div><div class="obj-desc">${desc}</div></div>`
     ).join("");
 
-    // Funnel by Tier
     const TIER_LABELS = { t1:"T1 — The Key",t2:"T2 — Behind Closed Doors",t3:"T3 — No Secrets",feet1:"Feet1 — Bare",feet2:"Feet2 — Closer" };
     const funnelBody = $("funnel-body");
     if (funnelBody) funnelBody.innerHTML = Object.entries(TIER_LABELS).map(([key,label]) => {
@@ -586,7 +558,6 @@ async function load(range) {
       return `<tr><td>${label}</td><td class="num">${fmtNum(t.link_sent_range)}</td><td class="num">${fmtNum(t.paid_range)}</td><td class="pct">${conv}</td><td class="num">${fmtNum(t.reminder1_sent_range)}</td><td class="num">${fmtNum(t.reminder2_sent_range)}</td><td class="num">${fmtNum(t.lock_set_range)}</td></tr>`;
     }).join("");
 
-    // Reentry
     const re = data.reentry || {};
     const reLs = re.link_sent || {}, rePd = re.paid || {}, reRev = re.revenue_cents || {}, reCvr = re.cvr || {};
     setVal("re-links",   fmtNum(reLs.total ?? null));
@@ -600,21 +571,18 @@ async function load(range) {
       return `<tr><td>${label}</td><td class="num">${fmtNum(reLs[key] ?? null)}</td><td class="num">${fmtNum(rePd[key] ?? null)}</td><td class="rev">${fmtEur(reRev[key] ?? null)}</td><td class="pct">${cvr}</td></tr>`;
     }).join("");
 
-    // Upgrades
     const upgrades = data.upgrades || {};
     setVal("up-t1t2",  fmtNum(upgrades.t1_to_t2 ?? null));
     setVal("up-t2t3",  fmtNum(upgrades.t2_to_t3 ?? null));
     setVal("up-feet1", fmtNum(upgrades.to_feet1  ?? null));
     setVal("up-feet2", fmtNum(upgrades.to_feet2  ?? null));
 
-    // Tip
     const tip = data.tip || {};
     setVal("tip-count",   tip.count_range > 0         ? tip.count_range   : "\u2014");
     setVal("tip-revenue", tip.revenue_cents_range > 0  ? fmtEur(tip.revenue_cents_range) : "\u2014");
     setVal("tip-avg",     tip.avg_tip_cents > 0        ? fmtEur(tip.avg_tip_cents) : "\u2014");
     setVal("tip-pct",     tip.revenue_pct > 0          ? tip.revenue_pct.toFixed(1) + "%" : "\u2014");
 
-    // Analisi Conversazioni
     renderAnalisi(data);
 
   } catch(e) {
@@ -623,9 +591,6 @@ async function load(range) {
   }
 }
 
-// ================================================================
-// ANALISI CONVERSAZIONI — metriche derivate lato JS
-// ================================================================
 function renderAnalisi(data) {
   const ops  = data.ops  || {};
   const kpi  = data.kpi  || {};
@@ -639,12 +604,12 @@ function renderAnalisi(data) {
   const groq  = ops.groq_calls_range     || 0;
   const hot   = ops.hot_calls_range      || 0;
 
-  amSet("am-msgs-per-user",    newU > 0 ? (msgs / newU).toFixed(1) : null,                         "");
-  amSet("am-msgs-per-buyer",   paid > 0 ? Math.round(msgs / paid)  : null,                         "");
-  amSet("am-offer-rate",       newU > 0 ? ((t1s / newU) * 100).toFixed(1) + "%" : null,            "");
-  amSet("am-rev-per-msg",      msgs > 0 ? "\u00A2" + (rev / msgs).toFixed(2) : null,               "");
-  amSet("am-funnel-drop",      t1s  > 0 ? (t1s - t1p) : null,         (t1s - t1p) > t1s * .8 ? "warn" : "");
-  amSet("am-provider-split",  (groq + hot) > 0 ? ((hot / (groq + hot)) * 100).toFixed(1) + "%" : null, "");
+  amSet("am-msgs-per-user",   newU > 0 ? (msgs / newU).toFixed(1) : null, "");
+  amSet("am-msgs-per-buyer",  paid > 0 ? Math.round(msgs / paid)  : null, "");
+  amSet("am-offer-rate",      newU > 0 ? ((t1s / newU) * 100).toFixed(1) + "%" : null, "");
+  amSet("am-rev-per-msg",     msgs > 0 ? "\u00A2" + (rev / msgs).toFixed(2) : null, "");
+  amSet("am-funnel-drop",     t1s  > 0 ? (t1s - t1p) : null, (t1s - t1p) > t1s * .8 ? "warn" : "");
+  amSet("am-provider-split", (groq + hot) > 0 ? ((hot / (groq + hot)) * 100).toFixed(1) + "%" : null, "");
 
   if (newU > 0) {
     const vis = $("funnel-vis");
@@ -653,7 +618,6 @@ function renderAnalisi(data) {
     fBar("offer", t1s,  newU, t1s);
     fBar("paid",  t1p,  newU, t1p);
   } else {
-    // Nascondi e azzera la barra quando non ci sono utenti (es. dopo reset)
     const vis = $("funnel-vis");
     if (vis) vis.style.display = "none";
     ["new","offer","paid"].forEach(k => {
@@ -677,9 +641,6 @@ function fBar(key, val, max, display) {
   if (lbl) lbl.textContent = display;
 }
 
-// ================================================================
-// EXPORT CSV / JSON
-// ================================================================
 const EXPORT_RANGES = ["1d","7d","14d","30d"];
 
 async function fetchAll() {
@@ -710,6 +671,7 @@ function flattenCSV(range, d) {
     active_24h: ops.active_users_24h || 0, groq_calls: groq, hot_calls: hot,
     dead_count: ops.dead_count_range || 0, dead_reentry: ops.dead_reentry_range || 0,
     dead_rate: ops.dead_rate ?? "",
+    repurchase_total: ops.repurchase_total_range || 0, // V8
     t1_link_sent: t1s, t1_paid: t1.paid_range || 0,
     t2_link_sent: t2.link_sent_range || 0, t2_paid: t2.paid_range || 0,
     t3_paid: t3.paid_range || 0,
@@ -759,9 +721,6 @@ async function exportJSON() {
   }
 }
 
-// ================================================================
-// RANGE BUTTONS + CONTROLS
-// ================================================================
 document.querySelectorAll(".range-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
@@ -775,9 +734,6 @@ $("btn-refresh").addEventListener("click", () => load(currentRange));
 $("btn-csv").addEventListener("click", exportCSV);
 $("btn-json").addEventListener("click", exportJSON);
 
-// ================================================================
-// RESET MODAL
-// ================================================================
 $("btn-open-reset").addEventListener("click", () => $("reset-modal").classList.add("open"));
 $("btn-cancel").addEventListener("click",     () => $("reset-modal").classList.remove("open"));
 $("btn-confirm").addEventListener("click", async () => {
@@ -795,9 +751,6 @@ $("btn-confirm").addEventListener("click", async () => {
   }
 });
 
-// ================================================================
-// INIT
-// ================================================================
 load("7d");
 fetchMetrics("30d").then(d => {
   rev30d = d?.kpi?.revenue_range_cents ?? null;
