@@ -1,9 +1,5 @@
-// Dashboard App v13
-// FIX 1: WORKER_URL aggiornato al custom domain (era hardcoded sul vecchio subdomain)
-// FIX 2: messages -> ops.messages_total_range (campo corretto dal worker V182)
-// FIX 3: groqCalls -> ops.groq_calls_range
-// FIX 4: objections + regression visibili nella sezione Ops
-// FIX 5: range default "1d" per vedere dati test immediatamente
+// Dashboard App v14
+// V14: aggiunto repurchase_total_range in render() e renderUpgrades
 
 const WORKER_URL = "https://gabriafterdark.obsidianmedia.space";
 const DASH_TOKEN = "123";
@@ -97,7 +93,6 @@ function render() {
   const levers = d.levers || {};
   const obj    = d.objections || {};
 
-  // KPI
   setText("revRange",      eur(k.revenue_range_cents));
   setText("rev7d",         eur(d7?.kpi?.revenue_range_cents));
   setText("rev30d",        eur(d30?.kpi?.revenue_range_cents));
@@ -106,17 +101,18 @@ function render() {
   setText("updatedAt",     d.generated_at ? new Date(d.generated_at).toLocaleTimeString("it-IT") : "--");
   setText("targetEOD",     DAILY_TARGET_CENTS != null ? eur(DAILY_TARGET_CENTS) : "--");
 
-  // Ops & System Signals
   setText("active24h",      num(ops.active_users_24h));
   setText("newUsersRange",  num(ops.new_users_range));
   setText("paidRange",      num(k.total_paid_range));
-  setText("messagesRange",  num(ops.messages_total_range));   // FIX: era mancante
-  setText("groqRange",      num(ops.groq_calls_range));       // FIX: era mancante
+  setText("messagesRange",  num(ops.messages_total_range));
+  setText("groqRange",      num(ops.groq_calls_range));
   setText("remindersTotal", num(levers.reminder_sent_total));
   setText("locksTotal",     num(levers.locks_set_total));
   setText("reentryUsed",    num(levers.reentry_used_total));
   setText("objTotal",       num(obj.total_range));
   setText("regressionCount",num(obj.regression_count_range));
+  // V14: riacquisti
+  setText("repurchaseTotal", num(ops.repurchase_total_range));
 
   const revPerActive = (ops.active_users_24h > 0 && k.revenue_range_cents > 0)
     ? eur(Math.round(k.revenue_range_cents / ops.active_users_24h)) : "--";
@@ -220,10 +216,10 @@ function renderUpgrades(u) {
   const grid = document.getElementById("upgradesGrid");
   if (!grid) return;
   grid.innerHTML = [
-    { label:"T1 → T2",  val: u.t1_to_t2 },
-    { label:"T2 → T3",  val: u.t2_to_t3 },
-    { label:"→ FEET1",  val: u.to_feet1  },
-    { label:"→ FEET2",  val: u.to_feet2  },
+    { label:"T1 → T2",     val: u.t1_to_t2 },
+    { label:"T2 → T3",     val: u.t2_to_t3 },
+    { label:"→ FEET1",     val: u.to_feet1  },
+    { label:"→ FEET2",     val: u.to_feet2  },
   ].map(({ label, val }) => `
     <div class="upBox">
       <div class="upKey">${label}</div>
